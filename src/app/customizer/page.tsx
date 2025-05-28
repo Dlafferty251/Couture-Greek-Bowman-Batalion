@@ -31,8 +31,11 @@ export default function CustomizerPage() {
 
       {/* Tool Panel */}
       <section className={styles.tools}>
-<ControlsPanel mode={mode} onColorChange={setShirtColor} />
-      </section>
+<ControlsPanel
+  mode={mode}
+  color={shirtColor} // ✅ Add this line
+  onColorChange={setShirtColor}
+/>      </section>
 
       {/* Main Canvas */}
       <main className={styles.canvasArea}>
