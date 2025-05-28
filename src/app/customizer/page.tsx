@@ -1,29 +1,54 @@
-"use client";
-import { db } from "@/lib/firebase";
-import { collection, addDoc } from "firebase/firestore";
+'use client';
+import React, { useState } from 'react';
+import ControlsPanel from '@/components/Controls/ControlsPanel';
+import TShirtCanvas from '@/components/Customizer/CustomizerCanvas';
+import styles from './customizer.module.css';
 
-const saveMockup = async () => {
-  try {
-    await addDoc(collection(db, "designs"), {
-      userEmail: "test@couturegreek.com",
-      shirtColor: "black",
-      decalUrl: "https://example.com/decal.png",
-      createdAt: new Date(),
-    });
-    alert("🔥 Design saved!");
-  } catch (err) {
-    console.error("Error saving mockup:", err);
-    alert("Something went wrong.");
-  }
-};
+const modes = ['Color', 'Decal', 'Text'] as const;
+type Mode = (typeof modes)[number];
+type View = 'front' | 'side' | 'back';
 
 export default function CustomizerPage() {
+  const [mode, setMode] = useState<Mode>('Color');
+  const [view, setView] = useState<View>('front');
+
   return (
-    <main>
-      <h1>Couture Greek Customizer</h1>
-      <button onClick={saveMockup} style={{ padding: "10px", marginTop: "1rem" }}>
-        Save Design to Firebase
-      </button>
-    </main>
+    <div className={styles.container}>
+      <aside className={styles.sidebar}>
+        {modes.map((m) => (
+          <button
+            key={m}
+            className={mode === m ? styles.activeTab : styles.tab}
+            onClick={() => setMode(m)}
+          >
+            {m}
+          </button>
+        ))}
+      </aside>
+
+      <main className={styles.main}>
+        <div className={styles.toolbar}>
+          {['front', 'side', 'back'].map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v as View)}
+              style={{
+                background: view === v ? '#333' : '#eee',
+                color: view === v ? '#fff' : '#000',
+                margin: '0 0.25rem',
+                padding: '0.5rem 1rem',
+                border: 'none',
+                borderRadius: '4px',
+              }}
+            >
+              {v.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
+        <ControlsPanel mode={mode} />
+        <TShirtCanvas mode={mode} view={view} />
+      </main>
+    </div>
   );
 }
