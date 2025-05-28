@@ -7,6 +7,7 @@ type CustomizerCanvasProps = {
   mode: string;
   view: 'front' | 'side' | 'back';
   shirtColor: string;
+  decalImage?: string | null;
 };
 
 const imageMap: Record<'front' | 'side' | 'back', string> = {
@@ -15,8 +16,12 @@ const imageMap: Record<'front' | 'side' | 'back', string> = {
   back: '/tshirt-back.png',
 };
 
-export default function TShirtCanvas({ view, shirtColor }: CustomizerCanvasProps) {
-  const imageSrc = imageMap[view] || imageMap.front;
+export default function TShirtCanvas({
+  view,
+  shirtColor,
+  decalImage,
+}: CustomizerCanvasProps) {
+  const imageSrc = imageMap[view];
 
   return (
     <div className={styles.canvasWrapper}>
@@ -29,7 +34,19 @@ export default function TShirtCanvas({ view, shirtColor }: CustomizerCanvasProps
           className={styles.tshirtImage}
           priority
         />
+
         <div className={styles.colorOverlay} style={{ backgroundColor: shirtColor }} />
+
+        {decalImage && (
+          <Image
+            src={decalImage}
+            alt="User decal"
+            width={500}
+            height={500}
+            className={styles.decalOverlay}
+            priority
+          />
+        )}
       </div>
     </div>
   );
