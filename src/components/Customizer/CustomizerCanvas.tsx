@@ -29,10 +29,7 @@ export default function TShirtCanvas({ view, shirtColor }: CustomizerCanvasProps
           className={styles.tshirtImage}
           priority
         />
-        <div
-          className={styles.colorOverlay}
-          style={{ backgroundColor: shirtColor }}
-        />
+        <div className={styles.colorOverlay} style={{ backgroundColor: shirtColor }} />
       </div>
     </div>
   );

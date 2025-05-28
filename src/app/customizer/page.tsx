@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import ControlsPanel from '@/components/Controls/ControlsPanel';
 import TShirtCanvas from '@/components/Customizer/CustomizerCanvas';
-import uploadImageToCloudinary from "@/components/Controls/UploadImage";
+import uploadImageToCloudinary from '@/components/Controls/UploadImage';
 
 import styles from './customizer.module.css';
 
@@ -22,10 +22,10 @@ export default function CustomizerPage() {
 
     try {
       const url = await uploadImageToCloudinary(file);
-      console.log("✅ Uploaded decal URL:", url);
-      setUploadedDecal(url); 
+      console.log('✅ Uploaded decal URL:', url);
+      setUploadedDecal(url);
     } catch (err) {
-      console.error("❌ Upload failed:", err);
+      console.error('❌ Upload failed:', err);
     }
   };
 
@@ -33,7 +33,7 @@ export default function CustomizerPage() {
     <div className={styles.container}>
       {/* Sidebar */}
       <aside className={styles.sidebar}>
-        {modes.map((m) => (
+        {modes.map(m => (
           <button
             key={m}
             className={mode === m ? styles.activeTab : styles.tab}
@@ -68,7 +68,7 @@ export default function CustomizerPage() {
       {/* Main Canvas */}
       <main className={styles.canvasArea}>
         <div className={styles.toolbar}>
-          {['front', 'side', 'back'].map((v) => (
+          {['front', 'side', 'back'].map(v => (
             <button
               key={v}
               onClick={() => setView(v as View)}
