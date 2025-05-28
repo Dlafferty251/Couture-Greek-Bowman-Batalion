@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     // Skip ESLint errors during `next build`
     ignoreDuringBuilds: true,
   },
+  images: {
+    domains: ['res.cloudinary.com'],
+  },
   /* your other config options here */
 };
 
