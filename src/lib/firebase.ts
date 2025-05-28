@@ -3,13 +3,12 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBNzQRq5rp3SVhht-W1ecRx0M4lCBWIy44",
-  authDomain: "couture-greek.firebaseapp.com",
-  projectId: "couture-greek",
-  storageBucket: "couture-greek.firebasestorage.app",
-  messagingSenderId: "14472606701",
-  appId: "1:14472606701:web:48f49da7b1480282112de4",
-  measurementId: "G-4K8TM3VZL1" // Optional – keep if you plan to use analytics later
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Prevent re-initializing on hot reload
