@@ -1,0 +1,39 @@
+'use client';
+import React from 'react';
+import Image from 'next/image';
+import styles from './CustomizerCanvas.module.css';
+
+type CustomizerCanvasProps = {
+  mode: string;
+  view: 'front' | 'side' | 'back';
+  shirtColor: string;
+};
+
+const imageMap: Record<'front' | 'side' | 'back', string> = {
+  front: '/tshirt-front.png',
+  side: '/tshirt-side.png',
+  back: '/tshirt-back.png',
+};
+
+export default function TShirtCanvas({ view, shirtColor }: CustomizerCanvasProps) {
+  const imageSrc = imageMap[view] || imageMap.front;
+
+  return (
+    <div className={styles.canvasWrapper}>
+      <div className={styles.imageContainer}>
+        <Image
+          src={imageSrc}
+          alt={`T-shirt ${view}`}
+          width={500}
+          height={500}
+          className={styles.tshirtImage}
+          priority
+        />
+        <div
+          className={styles.colorOverlay}
+          style={{ backgroundColor: shirtColor }}
+        />
+      </div>
+    </div>
+  );
+}
