@@ -1,30 +1,58 @@
-"use client";
-import { db } from "@/lib/firebase";
-import { collection, addDoc } from "firebase/firestore";
+'use client';
+import React, { useState } from 'react';
+import ControlsPanel from '@/components/Controls/ControlsPanel';
+import TShirtCanvas from '@/components/Customizer/CustomizerCanvas';
+import styles from './customizer.module.css';
 
-const saveMockup = async () => {
-  try {
-    await addDoc(collection(db, "designs"), {
-      userEmail: "test@couturegreek.com",
-      shirtColor: "black",
-      decalUrl: "https://example.com/decal.png",
-      createdAt: new Date(),
-    });
-    alert("🔥 Design saved!");
-  } catch (err) {
-    console.error("Error saving mockup:", err);
-    alert("Something went wrong.");
-  }
-};
+const modes = ['Color', 'Decal', 'Text'] as const;
+type Mode = (typeof modes)[number];
+type View = 'front' | 'side' | 'back';
 
 export default function CustomizerPage() {
+  const [mode, setMode] = useState<Mode>('Color');
+  const [view, setView] = useState<View>('front');
+  const [shirtColor, setShirtColor] = useState<string>('#ffffff');
+
+
   return (
-    <main>
-      <h1>Couture Greek Customizer</h1>
-      <button onClick={saveMockup} style={{ padding: "10px", marginTop: "1rem" }}>
-        Save Design to Firebase
-      </button>
-    </main>
+    <div className={styles.container}>
+      {/* Sidebar */}
+      <aside className={styles.sidebar}>
+        {modes.map((m) => (
+          <button
+            key={m}
+            className={mode === m ? styles.activeTab : styles.tab}
+            onClick={() => setMode(m)}
+          >
+            {m}
+          </button>
+        ))}
+      </aside>
+
+      {/* Tool Panel */}
+      <section className={styles.tools}>
+<ControlsPanel
+  mode={mode}
+  color={shirtColor} // ✅ Add this line
+  onColorChange={setShirtColor}
+/>      </section>
+
+      {/* Main Canvas */}
+      <main className={styles.canvasArea}>
+        <div className={styles.toolbar}>
+          {['front', 'side', 'back'].map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v as View)}
+              className={view === v ? styles.viewActive : styles.viewBtn}
+            >
+              {v.toUpperCase()}
+            </button>
+          ))}
+        </div>
+<TShirtCanvas mode={mode} view={view} shirtColor={shirtColor} />
+      </main>
+    </div>
   );
 }
 //test
