@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import ControlsPanel from '@/components/Controls/ControlsPanel';
 import TShirtCanvas from '@/components/Customizer/CustomizerCanvas';
+import uploadImageToCloudinary from "@/components/Controls/UploadImage";
+
 import styles from './customizer.module.css';
 
 const modes = ['Color', 'Decal', 'Text'] as const;
@@ -12,7 +14,20 @@ export default function CustomizerPage() {
   const [mode, setMode] = useState<Mode>('Color');
   const [view, setView] = useState<View>('front');
   const [shirtColor, setShirtColor] = useState<string>('#ffffff');
+  const [uploadedDecal, setUploadedDecal] = useState<string | null>(null); // optional
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const url = await uploadImageToCloudinary(file);
+      console.log("✅ Uploaded decal URL:", url);
+      setUploadedDecal(url); 
+    } catch (err) {
+      console.error("❌ Upload failed:", err);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -27,11 +42,27 @@ export default function CustomizerPage() {
             {m}
           </button>
         ))}
+
+        {/* 👇 Show upload only in Decal mode */}
+        {mode === 'Decal' && (
+          <div style={{ marginTop: '1rem' }}>
+            <label htmlFor="upload" style={{ fontSize: '0.9rem' }}>
+              Upload Decal:
+            </label>
+            <input
+              id="upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: 'block', marginTop: '0.5rem' }}
+            />
+          </div>
+        )}
       </aside>
 
       {/* Tool Panel */}
       <section className={styles.tools}>
-<ControlsPanel mode={mode} onColorChange={setShirtColor} />
+        <ControlsPanel mode={mode} onColorChange={setShirtColor} />
       </section>
 
       {/* Main Canvas */}
@@ -47,7 +78,13 @@ export default function CustomizerPage() {
             </button>
           ))}
         </div>
-<TShirtCanvas mode={mode} view={view} shirtColor={shirtColor} />
+
+        <TShirtCanvas
+          mode={mode}
+          view={view}
+          shirtColor={shirtColor}
+          // decalImage={uploadedDecal} // 🔧 Use this if you want to show decal on canvas
+        />
       </main>
     </div>
   );
