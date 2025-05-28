@@ -6,6 +6,7 @@ import styles from './CustomizerCanvas.module.css';
 type CustomizerCanvasProps = {
   mode: string;
   view: 'front' | 'side' | 'back';
+  shirtColor: string;
 };
 
 const imageMap: Record<'front' | 'side' | 'back', string> = {
@@ -14,22 +15,25 @@ const imageMap: Record<'front' | 'side' | 'back', string> = {
   back: '/tshirt-back.png',
 };
 
-export default function TShirtCanvas({ mode, view }: CustomizerCanvasProps) {
-const imageSrc = imageMap[view] || imageMap.front;
-
-  if (!imageSrc) return null; // 🛑 Don't render if invalid view
+export default function TShirtCanvas({ view, shirtColor }: CustomizerCanvasProps) {
+  const imageSrc = imageMap[view] || imageMap.front;
 
   return (
-    <div className={styles.canvas}>
-<Image
-  src={imageSrc}
-  alt={`T-shirt ${view}`}
-  className={styles.image}
-  width={500}
-  height={500}
-  priority
-/>
-
+    <div className={styles.canvasWrapper}>
+      <div className={styles.imageContainer}>
+        <Image
+          src={imageSrc}
+          alt={`T-shirt ${view}`}
+          width={500}
+          height={500}
+          className={styles.tshirtImage}
+          priority
+        />
+        <div
+          className={styles.colorOverlay}
+          style={{ backgroundColor: shirtColor }}
+        />
+      </div>
     </div>
   );
 }

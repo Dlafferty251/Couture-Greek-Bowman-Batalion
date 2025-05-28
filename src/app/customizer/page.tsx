@@ -11,9 +11,12 @@ type View = 'front' | 'side' | 'back';
 export default function CustomizerPage() {
   const [mode, setMode] = useState<Mode>('Color');
   const [view, setView] = useState<View>('front');
+  const [shirtColor, setShirtColor] = useState<string>('#ffffff');
+
 
   return (
     <div className={styles.container}>
+      {/* Sidebar */}
       <aside className={styles.sidebar}>
         {modes.map((m) => (
           <button
@@ -26,28 +29,25 @@ export default function CustomizerPage() {
         ))}
       </aside>
 
-      <main className={styles.main}>
+      {/* Tool Panel */}
+      <section className={styles.tools}>
+<ControlsPanel mode={mode} onColorChange={setShirtColor} />
+      </section>
+
+      {/* Main Canvas */}
+      <main className={styles.canvasArea}>
         <div className={styles.toolbar}>
           {['front', 'side', 'back'].map((v) => (
             <button
               key={v}
               onClick={() => setView(v as View)}
-              style={{
-                background: view === v ? '#333' : '#eee',
-                color: view === v ? '#fff' : '#000',
-                margin: '0 0.25rem',
-                padding: '0.5rem 1rem',
-                border: 'none',
-                borderRadius: '4px',
-              }}
+              className={view === v ? styles.viewActive : styles.viewBtn}
             >
               {v.toUpperCase()}
             </button>
           ))}
         </div>
-
-        <ControlsPanel mode={mode} />
-        <TShirtCanvas mode={mode} view={view} />
+<TShirtCanvas mode={mode} view={view} shirtColor={shirtColor} />
       </main>
     </div>
   );
