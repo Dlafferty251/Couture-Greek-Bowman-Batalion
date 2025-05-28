@@ -25,6 +25,7 @@ export default function Home() {
             <a href="#" className={styles.navLink}>Online Store</a>
             <a href="#" className={styles.navLink}>Custom Gallery</a>
             <a href="#" className={styles.navLink}>Photo Gallery</a>
+            <a href="customizer" className={styles.navLink}>Design Yours</a>
             <a href="#" className={styles.navLink}>More ▼</a>
           </nav>
           <div className={styles.headerIcons}>
