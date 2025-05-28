@@ -1,5 +1,5 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Image from 'next/image';
+import styles from './page.module.css';
 
 export default function Home() {
   return (
@@ -21,12 +21,24 @@ export default function Home() {
             priority
           />
           <nav className={styles.nav}>
-            <a href="#" className={styles.navLink + ' ' + styles.active}>Home</a>
-            <a href="#" className={styles.navLink}>Online Store</a>
-            <a href="#" className={styles.navLink}>Custom Gallery</a>
-            <a href="#" className={styles.navLink}>Photo Gallery</a>
-            <a href="customizer" className={styles.navLink}>Design Yours</a>
-            <a href="#" className={styles.navLink}>More ▼</a>
+            <a href="#" className={styles.navLink + ' ' + styles.active}>
+              Home
+            </a>
+            <a href="#" className={styles.navLink}>
+              Online Store
+            </a>
+            <a href="#" className={styles.navLink}>
+              Custom Gallery
+            </a>
+            <a href="#" className={styles.navLink}>
+              Photo Gallery
+            </a>
+            <a href="customizer" className={styles.navLink}>
+              Design Yours
+            </a>
+            <a href="#" className={styles.navLink}>
+              More ▼
+            </a>
           </nav>
           <div className={styles.headerIcons}>
             <button className={styles.iconButton}>🔍</button>
@@ -43,7 +55,12 @@ export default function Home() {
             <Image src="/CoutureGreek1.png" alt="Greek apparel" width={400} height={600} />
           </div>
           <div className={styles.heroImage + ' ' + styles.centerImage}>
-            <Image src="/CoutureGreek2.png" alt="Student in Greek apparel" width={400} height={600} />
+            <Image
+              src="/CoutureGreek2.png"
+              alt="Student in Greek apparel"
+              width={400}
+              height={600}
+            />
           </div>
           <div className={styles.heroImage}>
             <Image src="/CoutureGreek3.png" alt="Greek merchandise" width={400} height={600} />
@@ -95,7 +112,10 @@ export default function Home() {
             </div>
             <div className={styles.giftCardText}>
               <h2>FASHIONABLE GIFT CARDS</h2>
-              <p>Give the gift of fashion with a Couture Greek gift card. Perfect for birthdays, holidays, or just because!</p>
+              <p>
+                Give the gift of fashion with a Couture Greek gift card. Perfect for birthdays,
+                holidays, or just because!
+              </p>
               <button className={styles.buyGiftCardButton}>Buy Gift Card</button>
             </div>
           </div>
@@ -105,30 +125,47 @@ export default function Home() {
         <section className={styles.socialSection}>
           <h2>FOLLOW US ON SOCIAL</h2>
           <div className={styles.socialIcons}>
-            <a href="#" className={styles.socialIcon}>📘</a>
-            <a href="#" className={styles.socialIcon}>📷</a>
-            <a href="#" className={styles.socialIcon}>📌</a>
-            <a href="#" className={styles.socialIcon}>🎵</a>
+            <a href="#" className={styles.socialIcon}>
+              📘
+            </a>
+            <a href="#" className={styles.socialIcon}>
+              📷
+            </a>
+            <a href="#" className={styles.socialIcon}>
+              📌
+            </a>
+            <a href="#" className={styles.socialIcon}>
+              🎵
+            </a>
           </div>
         </section>
 
         {/* Newsletter Section */}
         <section className={styles.newsletter}>
           <h2>GET ON THE LIST.</h2>
-          <p>Be the first to see the new styles and get notified when we have a pop up event or special promotion.</p>
+          <p>
+            Be the first to see the new styles and get notified when we have a pop up event or
+            special promotion.
+          </p>
           <form className={styles.newsletterForm}>
-            <input 
-              type="email" 
-              placeholder="Email Address"
-              className={styles.emailInput}
-            />
-            <button type="submit" className={styles.joinButton}>Join</button>
+            <input type="email" placeholder="Email Address" className={styles.emailInput} />
+            <button type="submit" className={styles.joinButton}>
+              Join
+            </button>
           </form>
           <div className={styles.socialIconsSmall}>
-            <a href="#" className={styles.socialIconSmall}>📘</a>
-            <a href="#" className={styles.socialIconSmall}>📷</a>
-            <a href="#" className={styles.socialIconSmall}>📌</a>
-            <a href="#" className={styles.socialIconSmall}>🎵</a>
+            <a href="#" className={styles.socialIconSmall}>
+              📘
+            </a>
+            <a href="#" className={styles.socialIconSmall}>
+              📷
+            </a>
+            <a href="#" className={styles.socialIconSmall}>
+              📌
+            </a>
+            <a href="#" className={styles.socialIconSmall}>
+              🎵
+            </a>
           </div>
         </section>
       </main>
