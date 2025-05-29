@@ -14,6 +14,7 @@ export default function CustomizerPage() {
   const [view, setView] = useState<View>('front');
   const [shirtColor, setShirtColor] = useState<string>('#ffffff');
   const [uploadedDecal, setUploadedDecal] = useState<string | null>(null);
+  
 
   return (
     <div className={styles.container}>
@@ -64,7 +65,15 @@ export default function CustomizerPage() {
           shirtColor={shirtColor}
           decalImage={uploadedDecal}
         />
+<div className={styles.creativeBadge}>
+  <div className={styles.glowRing} />
+  <p>🎨 Studio Mode: <span className={styles.shimmerText}>Activated</span></p>
+</div>
+
+
       </main>
+
+
     </div>
   );
 }
