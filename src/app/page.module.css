@@ -1,5 +1,3 @@
-
-
 .page {
   font-family: Arial, sans-serif;
   line-height: 1.6;
@@ -330,51 +328,51 @@
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .nav {
     gap: 15px;
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .heroGrid {
     grid-template-columns: 1fr;
     height: auto;
   }
-  
+
   .heroImage {
     height: 300px;
   }
-  
+
   .logoRow {
     grid-template-columns: 1fr;
     gap: 15px;
   }
-  
+
   .giftCardContent {
     grid-template-columns: 1fr;
     gap: 40px;
     text-align: center;
   }
-  
+
   .giftCardText h2 {
     font-size: 2rem;
   }
-  
+
   .socialSection h2,
   .newsletter h2 {
     font-size: 2rem;
   }
-  
+
   .newsletterForm {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .socialIcons {
     gap: 20px;
   }
-  
+
   .socialIcon {
     width: 50px;
     height: 50px;

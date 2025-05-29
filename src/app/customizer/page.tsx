@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import ControlsPanel from '@/components/Controls/ControlsPanel';
+import ColorPicker from '@/components/Controls/ColorPicker';
+import DecalPanel from '@/components/Controls/DecalPanel';
 import TShirtCanvas from '@/components/Customizer/CustomizerCanvas';
 import styles from './customizer.module.css';
 
@@ -12,13 +13,13 @@ export default function CustomizerPage() {
   const [mode, setMode] = useState<Mode>('Color');
   const [view, setView] = useState<View>('front');
   const [shirtColor, setShirtColor] = useState<string>('#ffffff');
-
+  const [uploadedDecal, setUploadedDecal] = useState<string | null>(null);
 
   return (
     <div className={styles.container}>
-      {/* Sidebar */}
+      {/* Sidebar with mode tabs */}
       <aside className={styles.sidebar}>
-        {modes.map((m) => (
+        {modes.map(m => (
           <button
             key={m}
             className={mode === m ? styles.activeTab : styles.tab}
@@ -31,16 +32,16 @@ export default function CustomizerPage() {
 
       {/* Tool Panel */}
       <section className={styles.tools}>
-<ControlsPanel
-  mode={mode}
-  color={shirtColor} // ✅ Add this line
-  onColorChange={setShirtColor}
-/>      </section>
+        {mode === 'Color' && <ColorPicker onColorChange={setShirtColor} />}
+        {mode === 'Decal' && <DecalPanel onDecalSelect={setUploadedDecal} />}
+        {mode === 'Text' && <p style={{ color: 'white' }}>Text tool coming soon...</p>}
+      </section>
 
       {/* Main Canvas */}
       <main className={styles.canvasArea}>
+        {/* View Toggle Toolbar */}
         <div className={styles.toolbar}>
-          {['front', 'side', 'back'].map((v) => (
+          {['front', 'side', 'back'].map(v => (
             <button
               key={v}
               onClick={() => setView(v as View)}
@@ -50,7 +51,14 @@ export default function CustomizerPage() {
             </button>
           ))}
         </div>
-<TShirtCanvas mode={mode} view={view} shirtColor={shirtColor} />
+
+        <TShirtCanvas mode={mode} view={view} shirtColor={shirtColor} decalImage={uploadedDecal} />
+        <div className={styles.creativeBadge}>
+          <div className={styles.glowRing} />
+          <p>
+            🎨 Studio Mode: <span className={styles.shimmerText}>Activated</span>
+          </p>
+        </div>
       </main>
     </div>
   );
