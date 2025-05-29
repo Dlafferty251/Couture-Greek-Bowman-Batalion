@@ -1,22 +1,79 @@
-import React from 'react';
-import './ControlsPanel.module.css';
-import ColorPicker from './ColorPicker';
-type ControlsPanelProps = {
-  mode: string;
-  color: string; // 👈 Add this
-  onColorChange: (color: string) => void;
+'use client';
+import React, { useEffect, useState } from 'react';
+import { getPresetColors } from '@/utils/fetchPresetColors';
+
+type PresetColor = {
+  id: string;
+  name: string;
+  hex: string;
 };
 
-export default function ControlsPanel({ mode, color, onColorChange }: ControlsPanelProps) {
+type ColorPickerProps = {
+  color: string;
+  onChange: (newColor: string) => void;
+};
+
+export default function ColorPicker({ color, onChange }: ColorPickerProps) {
+  const [presetColors, setPresetColors] = useState<PresetColor[]>([]);
+  const [customColor, setCustomColor] = useState<string>(color);
+
+  useEffect(() => {
+    const loadColors = async () => {
+      try {
+        const colors = await getPresetColors();
+        setPresetColors(colors);
+      } catch (err) {
+        console.error('❌ Failed to load preset colors:', err);
+      }
+    };
+    loadColors();
+  }, []);
+
+  useEffect(() => {
+    setCustomColor(color);
+  }, [color]);
+
+  const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = e.target.value;
+    setCustomColor(newColor);
+    onChange(newColor);
+  };
+
   return (
-    <section className="controls">
-      {mode === 'Color' && (
-        <div className="controlSection">
-          <ColorPicker color={color} onChange={onColorChange} /> {/* ✅ FIXED */}
-        </div>
-      )}
-      {mode === 'Decal' && <div className="controlSection">{/* UploadImage */}</div>}
-      {mode === 'Text' && <div className="controlSection">{/* TextEditor */}</div>}
-    </section>
+    <div style={{ padding: '1rem', color: 'white' }}>
+      <label style={{ display: 'block', marginBottom: '0.5rem' }}>Preset Colors:</label>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+        {presetColors.map(c => (
+          <button
+            key={c.id}
+            onClick={() => onChange(c.hex)}
+            title={c.name}
+            style={{
+              backgroundColor: c.hex,
+              width: '32px',
+              height: '32px',
+              border: c.hex === customColor ? '2px solid white' : '1px solid #ccc',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          />
+        ))}
+      </div>
+
+      <label style={{ display: 'block', marginBottom: '0.25rem' }}>Custom Color:</label>
+      <input
+        type="color"
+        value={customColor}
+        onChange={handleCustomChange}
+        style={{
+          width: '100%',
+          height: '2rem',
+          border: 'none',
+          cursor: 'pointer',
+          backgroundColor: customColor,
+        }}
+      />
+    </div>
   );
 }

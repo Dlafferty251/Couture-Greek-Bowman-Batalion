@@ -15,7 +15,6 @@
   color: black;
 }
 
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -28,7 +27,9 @@
   height: auto;
   border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .decalThumb:hover {

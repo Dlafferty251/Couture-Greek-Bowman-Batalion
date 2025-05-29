@@ -39,7 +39,7 @@ export default function ColorPicker({ onColorChange }: ColorPickerProps) {
       <label style={{ display: 'block', marginBottom: '0.5rem' }}>Preset Colors:</label>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
-        {presetColors.map((c) => (
+        {presetColors.map(c => (
           <button
             key={c.id}
             onClick={() => onColorChange(c.hex)}

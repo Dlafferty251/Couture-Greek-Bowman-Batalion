@@ -105,12 +105,15 @@
   height: 14px;
   border-radius: 50%;
   border: 2px solid #ff69b4;
-  box-shadow: 0 0 8px #ff69b4, 0 0 12px #ff69b4;
+  box-shadow:
+    0 0 8px #ff69b4,
+    0 0 12px #ff69b4;
   animation: pulseGlow 2s infinite ease-in-out;
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 0 8px #ff69b4;
   }
@@ -121,7 +124,8 @@
 }
 
 @keyframes floatBadge {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {

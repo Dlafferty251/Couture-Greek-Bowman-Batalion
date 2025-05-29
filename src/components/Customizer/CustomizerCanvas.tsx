@@ -27,11 +27,7 @@ const imageMap: Record<'front' | 'side' | 'back', string> = {
   back: '/tshirt-back.png',
 };
 
-export default function TShirtCanvas({
-  view,
-  shirtColor,
-  decalImage,
-}: CustomizerCanvasProps) {
+export default function TShirtCanvas({ view, shirtColor, decalImage }: CustomizerCanvasProps) {
   const imageSrc = imageMap[view];
   const canvasRef = useRef<HTMLDivElement>(null);
   const [decals, setDecals] = useState<Decal[]>([]);
@@ -42,10 +38,10 @@ export default function TShirtCanvas({
   // Handle canvas click to add decal
   const handleCanvasClick = (e: React.MouseEvent) => {
     if (!decalImage || !canvasRef.current) return;
-    
+
     // Don't add decal if clicking on existing decal
     if ((e.target as HTMLElement).closest(`.${styles.decalContainer}`)) return;
-    
+
     const rect = canvasRef.current.getBoundingClientRect();
     const newDecal: Decal = {
       id: Date.now(),
@@ -56,7 +52,7 @@ export default function TShirtCanvas({
       rotation: 0,
       src: decalImage,
     };
-    
+
     const updated = [...decals, newDecal];
     setDecals(updated);
     addToHistory(updated);
@@ -77,26 +73,26 @@ export default function TShirtCanvas({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    
+
     if (!canvasRef.current) return;
-    
+
     const rect = canvasRef.current.getBoundingClientRect();
     const files = Array.from(e.dataTransfer.files);
-    
+
     files.forEach((file, index) => {
       if (file.type.startsWith('image/')) {
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = event => {
           const newDecal: Decal = {
             id: Date.now() + index,
             x: Math.max(0, e.clientX - rect.left - 50),
-            y: Math.max(0, e.clientY - rect.top - 50 + (index * 20)),
+            y: Math.max(0, e.clientY - rect.top - 50 + index * 20),
             width: 100,
             height: 100,
             rotation: 0,
             src: event.target?.result as string,
           };
-          
+
           setDecals(prev => {
             const updated = [...prev, newDecal];
             addToHistory(updated);
@@ -118,7 +114,7 @@ export default function TShirtCanvas({
   const handleKeyDown = (e: KeyboardEvent) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
       e.preventDefault();
-      setHistory((prev) => {
+      setHistory(prev => {
         if (prev.length > 1) {
           const newHistory = [...prev];
           newHistory.pop();
@@ -128,7 +124,7 @@ export default function TShirtCanvas({
         return prev;
       });
     }
-    
+
     // Delete selected decal
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (selectedDecal) {
@@ -145,7 +141,7 @@ export default function TShirtCanvas({
 
   // Update decal properties
   const updateDecal = (id: number, changes: Partial<Decal>) => {
-    const updated = decals.map((d) => (d.id === id ? { ...d, ...changes } : d));
+    const updated = decals.map(d => (d.id === id ? { ...d, ...changes } : d));
     setDecals(updated);
     addToHistory(updated);
   };
@@ -182,33 +178,29 @@ export default function TShirtCanvas({
 
   return (
     <div className={styles.canvasWrapper}>
-      <div 
+      <div
         className={`${styles.imageContainer} ${dragOver ? styles.dragOver : ''}`}
-        ref={canvasRef} 
+        ref={canvasRef}
         onClick={handleCanvasClick}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
         {/* T-shirt base image */}
-        <img
-          src={imageSrc}
-          alt={`T-shirt ${view}`}
-          className={styles.tshirtImage}
-        />
-        
+        <img src={imageSrc} alt={`T-shirt ${view}`} className={styles.tshirtImage} />
+
         {/* Color overlay - only affects the t-shirt */}
         <div
           className={styles.colorOverlay}
-          style={{ 
+          style={{
             backgroundColor: shirtColor,
             maskImage: `url(${imageSrc})`,
             WebkitMaskImage: `url(${imageSrc})`,
           }}
         />
-        
+
         {/* Decals */}
-        {decals.map((decal) => (
+        {decals.map(decal => (
           <Rnd
             key={decal.id}
             className={`${styles.decalContainer} ${selectedDecal === decal.id ? styles.selected : ''}`}
@@ -237,18 +229,18 @@ export default function TShirtCanvas({
               src={decal.src}
               alt="Decal"
               className={styles.decalImage}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 setSelectedDecal(decal.id);
               }}
             />
-            
+
             {/* Control buttons for selected decal */}
             {selectedDecal === decal.id && (
               <div className={styles.decalControls}>
                 <button
                   className={`${styles.controlBtn} ${styles.rotateBtn}`}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     rotateDecal(decal.id);
                   }}
@@ -257,7 +249,7 @@ export default function TShirtCanvas({
                 </button>
                 <button
                   className={`${styles.controlBtn} ${styles.duplicateBtn}`}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     duplicateDecal(decal.id);
                   }}
@@ -266,7 +258,7 @@ export default function TShirtCanvas({
                 </button>
                 <button
                   className={`${styles.controlBtn} ${styles.deleteBtn}`}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     deleteDecal(decal.id);
                   }}
@@ -277,7 +269,7 @@ export default function TShirtCanvas({
             )}
           </Rnd>
         ))}
-        
+
         {/* Drop zone indicator */}
         {dragOver && (
           <div className={styles.dropIndicator}>
@@ -285,10 +277,12 @@ export default function TShirtCanvas({
           </div>
         )}
       </div>
-      
+
       {/* Instructions */}
       <div className={styles.instructions}>
-        <p><strong>Instructions:</strong></p>
+        <p>
+          <strong>Instructions:</strong>
+        </p>
         <ul>
           <li>Click to place decal (if one is selected)</li>
           <li>Drag & drop images from your computer</li>

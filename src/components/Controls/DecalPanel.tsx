@@ -11,7 +11,7 @@ type Props = {
 type Decal = { name: string; url: string };
 
 export default function DecalPanel({ onDecalSelect }: Props) {
-const [decals, setDecals] = useState<Decal[]>([]);
+  const [decals, setDecals] = useState<Decal[]>([]);
   const [activeCategory, setActiveCategory] = useState('APA');
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const [decals, setDecals] = useState<Decal[]>([]);
       </label>
 
       <div className={styles.categoryButtons}>
-        {['AKA', 'DELTA', 'KAPPA', 'APA', 'OMEGA', 'ZETA', 'SGRHO', 'IOTA'].map((category) => (
+        {['AKA', 'DELTA', 'KAPPA', 'APA', 'OMEGA', 'ZETA', 'SGRHO', 'IOTA'].map(category => (
           <button
             key={category}
             className={`${styles.categoryButton} ${
@@ -68,20 +68,20 @@ const [decals, setDecals] = useState<Decal[]>([]);
       </div>
 
       <div className={styles.grid}>
-{decals
-  .filter((decal) => typeof decal.url === 'string' && decal.url.startsWith('http'))
-  .map((decal, idx) => (
-    <div key={idx} className={styles.previewBox}>
-      <Image
-        src={decal.url}
-        width={100}
-        height={100}
-        className={styles.decalThumb}
-        alt={decal.name || `Decal ${idx}`}
-        onClick={() => onDecalSelect(decal.url)}
-      />
-    </div>
-  ))}
+        {decals
+          .filter(decal => typeof decal.url === 'string' && decal.url.startsWith('http'))
+          .map((decal, idx) => (
+            <div key={idx} className={styles.previewBox}>
+              <Image
+                src={decal.url}
+                width={100}
+                height={100}
+                className={styles.decalThumb}
+                alt={decal.name || `Decal ${idx}`}
+                onClick={() => onDecalSelect(decal.url)}
+              />
+            </div>
+          ))}
       </div>
     </div>
   );

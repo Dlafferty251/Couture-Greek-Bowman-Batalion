@@ -6,7 +6,11 @@
   padding: 2rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
 /* Main container for the t-shirt canvas */
@@ -196,21 +200,21 @@
   .canvasWrapper {
     padding: 1rem;
   }
-  
+
   .imageContainer {
     width: 350px;
     height: 350px;
   }
-  
+
   .instructions {
     font-size: 0.9rem;
   }
-  
+
   .decalControls {
     top: -35px;
     right: -5px;
   }
-  
+
   .controlBtn {
     width: 24px;
     height: 24px;
@@ -221,12 +225,12 @@
   .canvasWrapper {
     padding: 0.5rem;
   }
-  
+
   .imageContainer {
     width: 300px;
     height: 300px;
   }
-  
+
   .instructions {
     padding: 1rem;
     font-size: 0.8rem;
