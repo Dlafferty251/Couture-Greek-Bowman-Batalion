@@ -60,7 +60,7 @@ export default function DraggableDecal({ url, x, y, onUpdate }: Props) {
           max={2}
           step={0.1}
           value={scale}
-          onChange={(e) => {
+          onChange={e => {
             const val = parseFloat(e.target.value);
             setScale(val);
             onUpdate(position.x, position.y, val, rotation);
@@ -72,7 +72,7 @@ export default function DraggableDecal({ url, x, y, onUpdate }: Props) {
           max={180}
           step={1}
           value={rotation}
-          onChange={(e) => {
+          onChange={e => {
             const val = parseInt(e.target.value);
             setRotation(val);
             onUpdate(position.x, position.y, scale, val);
