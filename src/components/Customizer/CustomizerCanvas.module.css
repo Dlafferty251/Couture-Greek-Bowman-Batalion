@@ -1,40 +1,234 @@
+/* Main wrapper */
 .canvasWrapper {
-  display: inline-block;
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* Main container for the t-shirt canvas */
 .imageContainer {
   position: relative;
   width: 500px;
   height: 500px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  cursor: crosshair;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
 }
 
+.imageContainer.dragOver {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+  transform: scale(1.02);
+}
+
+/* T-shirt base image */
 .tshirtImage {
   position: absolute;
   width: 100%;
   height: 100%;
   object-fit: contain;
   z-index: 1;
+  pointer-events: none;
 }
 
+/* Color overlay that only affects the t-shirt shape */
 .colorOverlay {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
   mix-blend-mode: multiply;
+  opacity: 0.6;
+  z-index: 2;
   pointer-events: none;
-  opacity: 0.75; /* tweak for realism */
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
 }
 
-.decalOverlay {
+/* Decal containers */
+.decalContainer {
+  z-index: 10;
+  border: 2px dashed transparent;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: move;
+}
+
+.decalContainer:hover,
+.decalContainer.selected {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+/* Decal images */
+.decalImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.decalImage:hover {
+  filter: brightness(1.1);
+}
+
+/* Decal control buttons */
+.decalControls {
   position: absolute;
-  top: 35%; /* adjust for placement */
-  left: 35%;
-  width: 100px; /* try dynamic sizing later */
-  height: auto;
-  z-index: 3;
-  pointer-events: none;
+  top: -40px;
+  right: -10px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.decalContainer.selected .decalControls {
+  opacity: 1;
+}
+
+.controlBtn {
+  background: #4f46e5;
+  border: none;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.controlBtn:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+}
+
+.deleteBtn {
+  background: #ef4444;
+}
+
+.deleteBtn:hover {
+  background: #dc2626;
+}
+
+.duplicateBtn {
+  background: #10b981;
+}
+
+.duplicateBtn:hover {
+  background: #059669;
+}
+
+.rotateBtn {
+  background: #f59e0b;
+}
+
+.rotateBtn:hover {
+  background: #d97706;
+}
+
+/* Drop indicator */
+.dropIndicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(79, 70, 229, 0.9);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  z-index: 20;
+  backdrop-filter: blur(10px);
+}
+
+/* Instructions panel */
+.instructions {
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.5rem;
+  border-radius: 12px;
+  max-width: 500px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.instructions p {
+  margin: 0 0 1rem 0;
+  color: #374151;
+  font-weight: 600;
+}
+
+.instructions ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #6b7280;
+}
+
+.instructions li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* React-rnd styles are handled in the component with inline styles */
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .canvasWrapper {
+    padding: 1rem;
+  }
+  
+  .imageContainer {
+    width: 350px;
+    height: 350px;
+  }
+  
+  .instructions {
+    font-size: 0.9rem;
+  }
+  
+  .decalControls {
+    top: -35px;
+    right: -5px;
+  }
+  
+  .controlBtn {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .canvasWrapper {
+    padding: 0.5rem;
+  }
+  
+  .imageContainer {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .instructions {
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
 }

@@ -43,3 +43,30 @@
   border: 1px solid #333;
   text-align: center;
 }
+
+.categoryButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 1rem 0;
+}
+
+.categoryButton {
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.categoryButton:hover {
+  background-color: #444;
+}
+
+.categoryButton.active {
+  background-color: #8a2be2;
+  border-color: #b68cff;
+}
