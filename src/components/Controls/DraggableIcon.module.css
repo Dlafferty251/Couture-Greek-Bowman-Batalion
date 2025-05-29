@@ -1,0 +1,13 @@
+.decal {
+  position: absolute;
+  cursor: move;
+  z-index: 10;
+  user-select: none;
+}
+
+.controls {
+  margin-top: 4px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}

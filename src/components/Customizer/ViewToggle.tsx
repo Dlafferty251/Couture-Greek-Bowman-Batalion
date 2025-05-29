@@ -12,7 +12,7 @@ export default function ViewToggle({ currentView, onChange }: ViewToggleProps) {
 
   return (
     <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-      {views.map((view) => (
+      {views.map(view => (
         <button
           key={view}
           onClick={() => onChange(view)}

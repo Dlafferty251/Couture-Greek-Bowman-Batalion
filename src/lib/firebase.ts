@@ -12,10 +12,7 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID!,
 };
 
-console.log("🔥 Firebase Project ID:", process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
+console.log('🔥 Firebase Project ID:', process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
 
-
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-
-
