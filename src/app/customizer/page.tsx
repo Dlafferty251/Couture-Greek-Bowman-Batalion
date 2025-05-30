@@ -43,10 +43,12 @@ export default function CustomizerPage() {
   useEffect(() => {
     const currentColor = allColors.find(c => c.hex === shirtColor);
 
-    const currentDecals = placedDecals.map(d => {
-      const match = allDecals.find(a => a.url === d.src);
-      return match ? { name: match.name, price: parseFloat(match.price) } : null;
-    }).filter(Boolean) as { name: string; price: number }[];
+    const currentDecals = placedDecals
+      .map(d => {
+        const match = allDecals.find(a => a.url === d.src);
+        return match ? { name: match.name, price: parseFloat(match.price) } : null;
+      })
+      .filter(Boolean) as { name: string; price: number }[];
 
     const total = calculatePrice(currentColor || null, currentDecals);
     setPrice(total);
