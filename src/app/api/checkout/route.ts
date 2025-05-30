@@ -8,9 +8,7 @@ if (!process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY) {
   throw new Error('🚨 NEXT_PUBLIC_STRIPE_SECRET_KEY is missing in your .env.local');
 }
 
-const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY, {
-  apiVersion: '2022-11-15', // stable version
-});
+const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY!);
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({} as any));
