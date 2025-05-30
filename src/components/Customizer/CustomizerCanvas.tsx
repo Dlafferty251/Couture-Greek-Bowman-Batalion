@@ -4,9 +4,13 @@ import { Rnd } from 'react-rnd';
 import { RotateCw, Trash2, Copy } from 'lucide-react';
 import styles from './CustomizerCanvas.module.css';
 
+type ApparelType = 'tshirt' | 'jacket' | 'sweatshirt' | 'longsleeve';
+type View = 'front' | 'side' | 'back';
+
 type CustomizerCanvasProps = {
+  apparelType: ApparelType;
   mode: string;
-  view: 'front' | 'side' | 'back';
+  view: View;
   shirtColor: string;
   decalImage?: string | null;
   decals: Decal[];
@@ -23,20 +27,39 @@ type Decal = {
   src: string;
 };
 
-const imageMap: Record<'front' | 'side' | 'back', string> = {
-  front: '/tshirt-front.png',
-  side: '/tshirt-side.png',
-  back: '/tshirt-back.png',
+// 👕 Update to support different apparel
+const imageMap: Record<ApparelType, Record<View, string>> = {
+  tshirt: {
+    front: '/apparel/shirts/tshirt-front.png',
+    side: '/apparel/shirts/tshirt-side.png',
+    back: '/apparel/shirts/tshirt-back.png',
+  },
+  jacket: {
+    front: '/apparel/jackets/jacket-front.png',
+    side: '/apparel/jackets/jacket-front.png',
+    back: '/apparel/jackets/jacket-front.png',
+  },
+  sweatshirt: {
+    front: '/apparel/sweatshirts/sweatshirt-front.png',
+    side: '/apparel/sweatshirts/sweatshirt-side.png',
+    back: '/apparel/sweatshirts/sweatshirt-back.png',
+  },
+  longsleeve: {
+    front: '/apparel/longsleeves/longsleeve-front.png',
+    side: '/apparel/longsleeves/longsleeve-side.png',
+    back: '/apparel/longsleeves/longsleeve-back.png',
+  },
 };
 
 export default function CustomizerCanvas({
+  apparelType,
   view,
   shirtColor,
   decalImage,
   decals,
   setDecals,
 }: CustomizerCanvasProps) {
-  const imageSrc = imageMap[view];
+  const imageSrc = imageMap[apparelType][view];
   const canvasRef = useRef<HTMLDivElement>(null);
   const [history, setHistory] = useState<Decal[][]>([[]]);
   const [selectedDecal, setSelectedDecal] = useState<number | null>(null);
@@ -181,7 +204,8 @@ export default function CustomizerCanvas({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <img src={imageSrc} alt={`T-shirt ${view}`} className={styles.tshirtImage} />
+        <img src={imageSrc} alt={`${apparelType} ${view}`} className={styles.tshirtImage} />
+
         <div
           className={styles.colorOverlay}
           style={{
@@ -225,28 +249,13 @@ export default function CustomizerCanvas({
             />
             {selectedDecal === decal.id && (
               <div className={styles.decalControls}>
-                <button
-                  onClick={e => {
-                    e.stopPropagation();
-                    rotateDecal(decal.id);
-                  }}
-                >
+                <button onClick={e => { e.stopPropagation(); rotateDecal(decal.id); }}>
                   <RotateCw size={14} />
                 </button>
-                <button
-                  onClick={e => {
-                    e.stopPropagation();
-                    duplicateDecal(decal.id);
-                  }}
-                >
+                <button onClick={e => { e.stopPropagation(); duplicateDecal(decal.id); }}>
                   <Copy size={14} />
                 </button>
-                <button
-                  onClick={e => {
-                    e.stopPropagation();
-                    deleteDecal(decal.id);
-                  }}
-                >
+                <button onClick={e => { e.stopPropagation(); deleteDecal(decal.id); }}>
                   <Trash2 size={14} />
                 </button>
               </div>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import ColorPicker from '@/components/Controls/ColorPicker';
 import DecalPanel from '@/components/Controls/DecalPanel';
-import TShirtCanvas from '@/components/Customizer/CustomizerCanvas';
+import CustomizerCanvas from '@/components/Customizer/CustomizerCanvas';
 import styles from './customizer.module.css';
 import { calculatePrice } from '@/utils/calculatePrice';
 import { fetchPrices } from '@/utils/fetchPrice';
@@ -10,6 +10,7 @@ import { fetchPrices } from '@/utils/fetchPrice';
 const modes = ['Color', 'Decal', 'Text'] as const;
 type Mode = (typeof modes)[number];
 type View = 'front' | 'side' | 'back';
+type ApparelType = 'tshirt' | 'jacket' | 'sweatshirt' | 'longsleeve';
 
 type CanvasDecal = {
   id: number;
@@ -24,6 +25,7 @@ type CanvasDecal = {
 export default function CustomizerPage() {
   const [mode, setMode] = useState<Mode>('Color');
   const [view, setView] = useState<View>('front');
+  const [apparelType, setApparelType] = useState<ApparelType>('tshirt');
   const [shirtColor, setShirtColor] = useState<string>('#ffffff');
   const [uploadedDecals, setUploadedDecals] = useState<string[]>([]); // for UI preview only
   const [placedDecals, setPlacedDecals] = useState<CanvasDecal[]>([]);
@@ -66,6 +68,18 @@ export default function CustomizerPage() {
             {m}
           </button>
         ))}
+
+        <div className={styles.apparelGroup}>
+          {['tshirt', 'jacket', 'sweatshirt', 'longsleeve'].map(type => (
+            <button
+              key={type}
+              className={apparelType === type ? styles.activeTab : styles.tab}
+              onClick={() => setApparelType(type as ApparelType)}
+            >
+              {type.toUpperCase()}
+            </button>
+          ))}
+        </div>
       </aside>
 
       <section className={styles.tools}>
@@ -87,14 +101,16 @@ export default function CustomizerPage() {
           ))}
         </div>
 
-        <TShirtCanvas
-          mode={mode}
-          view={view}
-          shirtColor={shirtColor}
-          decalImage={uploadedDecals[uploadedDecals.length - 1] || null}
-          decals={placedDecals}
-          setDecals={setPlacedDecals}
-        />
+<CustomizerCanvas
+  mode={mode}
+  view={view}
+  shirtColor={shirtColor}
+  decalImage={uploadedDecals[uploadedDecals.length - 1] || null}
+  decals={placedDecals}
+  setDecals={setPlacedDecals}
+  apparelType={apparelType} // 👈 THIS IS WHAT YOU'RE MISSING
+/>
+
 
         <div className={styles.creativeBadge}>
           <div className={styles.glowRing} />
