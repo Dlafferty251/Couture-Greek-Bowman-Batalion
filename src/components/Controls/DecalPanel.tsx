@@ -5,7 +5,7 @@ import styles from './DecalPanel.module.css';
 import { fetchDecalsByCategory } from '@/utils/fetchDecalsByCategory';
 
 type Props = {
-  onDecalSelect: (url: string) => void;
+  onDecalSelect: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 type Decal = { name: string; url: string };
@@ -35,10 +35,17 @@ export default function DecalPanel({ onDecalSelect }: Props) {
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.result) {
-        onDecalSelect(reader.result.toString());
+        onDecalSelect(prev => [...(prev ?? []), reader.result!.toString()]);
       }
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleDecalClick = (url: string) => {
+    onDecalSelect(prev => {
+      const safePrev = prev ?? [];
+      return [...safePrev, url]; // ✅ always add the decal, even if it’s the same
+    });
   };
 
   return (
@@ -78,7 +85,7 @@ export default function DecalPanel({ onDecalSelect }: Props) {
                 height={100}
                 className={styles.decalThumb}
                 alt={decal.name || `Decal ${idx}`}
-                onClick={() => onDecalSelect(decal.url)}
+                onClick={() => handleDecalClick(decal.url)}
               />
             </div>
           ))}

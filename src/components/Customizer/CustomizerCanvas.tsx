@@ -9,6 +9,8 @@ type CustomizerCanvasProps = {
   view: 'front' | 'side' | 'back';
   shirtColor: string;
   decalImage?: string | null;
+  decals: Decal[];
+  setDecals: React.Dispatch<React.SetStateAction<Decal[]>>;
 };
 
 type Decal = {
@@ -27,19 +29,25 @@ const imageMap: Record<'front' | 'side' | 'back', string> = {
   back: '/tshirt-back.png',
 };
 
-export default function TShirtCanvas({ view, shirtColor, decalImage }: CustomizerCanvasProps) {
+export default function CustomizerCanvas({
+  view,
+  shirtColor,
+  decalImage,
+  decals,
+  setDecals,
+}: CustomizerCanvasProps) {
   const imageSrc = imageMap[view];
   const canvasRef = useRef<HTMLDivElement>(null);
-  const [decals, setDecals] = useState<Decal[]>([]);
   const [history, setHistory] = useState<Decal[][]>([[]]);
   const [selectedDecal, setSelectedDecal] = useState<number | null>(null);
   const [dragOver, setDragOver] = useState(false);
 
-  // Handle canvas click to add decal
+  const addToHistory = (newDecals: Decal[]) => {
+    setHistory(prev => [...prev, newDecals]);
+  };
+
   const handleCanvasClick = (e: React.MouseEvent) => {
     if (!decalImage || !canvasRef.current) return;
-
-    // Don't add decal if clicking on existing decal
     if ((e.target as HTMLElement).closest(`.${styles.decalContainer}`)) return;
 
     const rect = canvasRef.current.getBoundingClientRect();
@@ -59,7 +67,6 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
     setSelectedDecal(newDecal.id);
   };
 
-  // Drag and drop functionality
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(true);
@@ -73,7 +80,6 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-
     if (!canvasRef.current) return;
 
     const rect = canvasRef.current.getBoundingClientRect();
@@ -105,12 +111,6 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
     });
   };
 
-  // History management
-  const addToHistory = (newDecals: Decal[]) => {
-    setHistory(prev => [...prev, newDecals]);
-  };
-
-  // Undo functionality
   const handleKeyDown = (e: KeyboardEvent) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
       e.preventDefault();
@@ -125,7 +125,6 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
       });
     }
 
-    // Delete selected decal
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (selectedDecal) {
         deleteDecal(selectedDecal);
@@ -139,19 +138,16 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
     return () => document.removeEventListener('keydown', listener);
   }, [selectedDecal]);
 
-  // Update decal properties
   const updateDecal = (id: number, changes: Partial<Decal>) => {
     const updated = decals.map(d => (d.id === id ? { ...d, ...changes } : d));
     setDecals(updated);
     addToHistory(updated);
   };
 
-  // Rotate decal
   const rotateDecal = (id: number) => {
     updateDecal(id, { rotation: (decals.find(d => d.id === id)?.rotation || 0) + 90 });
   };
 
-  // Delete decal
   const deleteDecal = (id: number) => {
     const updated = decals.filter(d => d.id !== id);
     setDecals(updated);
@@ -159,7 +155,6 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
     setSelectedDecal(null);
   };
 
-  // Duplicate decal
   const duplicateDecal = (id: number) => {
     const decal = decals.find(d => d.id === id);
     if (decal) {
@@ -186,10 +181,7 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        {/* T-shirt base image */}
         <img src={imageSrc} alt={`T-shirt ${view}`} className={styles.tshirtImage} />
-
-        {/* Color overlay - only affects the t-shirt */}
         <div
           className={styles.colorOverlay}
           style={{
@@ -199,7 +191,6 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
           }}
         />
 
-        {/* Decals */}
         {decals.map(decal => (
           <Rnd
             key={decal.id}
@@ -208,18 +199,16 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
             position={{ x: decal.x, y: decal.y }}
             bounds="parent"
             onDragStart={() => setSelectedDecal(decal.id)}
-            onDragStop={(_, d) => {
-              updateDecal(decal.id, { x: d.x, y: d.y });
-            }}
+            onDragStop={(_, d) => updateDecal(decal.id, { x: d.x, y: d.y })}
             onResizeStart={() => setSelectedDecal(decal.id)}
-            onResizeStop={(_, __, ref, ___, pos) => {
+            onResizeStop={(_, __, ref, ___, pos) =>
               updateDecal(decal.id, {
                 x: pos.x,
                 y: pos.y,
                 width: parseInt(ref.style.width),
                 height: parseInt(ref.style.height),
-              });
-            }}
+              })
+            }
             style={{
               transform: `rotate(${decal.rotation}deg)`,
               transformOrigin: 'center',
@@ -234,12 +223,9 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
                 setSelectedDecal(decal.id);
               }}
             />
-
-            {/* Control buttons for selected decal */}
             {selectedDecal === decal.id && (
               <div className={styles.decalControls}>
                 <button
-                  className={`${styles.controlBtn} ${styles.rotateBtn}`}
                   onClick={e => {
                     e.stopPropagation();
                     rotateDecal(decal.id);
@@ -248,7 +234,6 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
                   <RotateCw size={14} />
                 </button>
                 <button
-                  className={`${styles.controlBtn} ${styles.duplicateBtn}`}
                   onClick={e => {
                     e.stopPropagation();
                     duplicateDecal(decal.id);
@@ -257,7 +242,6 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
                   <Copy size={14} />
                 </button>
                 <button
-                  className={`${styles.controlBtn} ${styles.deleteBtn}`}
                   onClick={e => {
                     e.stopPropagation();
                     deleteDecal(decal.id);
@@ -270,53 +254,12 @@ export default function TShirtCanvas({ view, shirtColor, decalImage }: Customize
           </Rnd>
         ))}
 
-        {/* Drop zone indicator */}
         {dragOver && (
           <div className={styles.dropIndicator}>
             <p>Drop images here to add decals</p>
           </div>
         )}
       </div>
-
-      {/* Instructions */}
-      <div className={styles.instructions}>
-        <p>
-          <strong>Instructions:</strong>
-        </p>
-        <ul>
-          <li>Click to place decal (if one is selected)</li>
-          <li>Drag & drop images from your computer</li>
-          <li>Click decal to select, drag to move, resize with corners</li>
-          <li>Use buttons to rotate, duplicate, or delete</li>
-          <li>Press Delete/Backspace to remove selected decal</li>
-          <li>Ctrl+Z to undo</li>
-        </ul>
-      </div>
-
-      {/* Global styles for react-rnd */}
-      <style jsx global>{`
-        .react-rnd {
-          border-radius: 8px !important;
-        }
-
-        .react-rnd-drag-handle {
-          cursor: move !important;
-        }
-
-        .react-rnd-resize-handle {
-          background: #4f46e5 !important;
-          border: 2px solid white !important;
-          border-radius: 50% !important;
-          width: 12px !important;
-          height: 12px !important;
-          transition: all 0.2s ease !important;
-        }
-
-        .react-rnd-resize-handle:hover {
-          background: #4338ca !important;
-          transform: scale(1.2) !important;
-        }
-      `}</style>
     </div>
   );
 }
