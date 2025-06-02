@@ -2,12 +2,19 @@
 import React, { useEffect, useState } from 'react';
 import { getPresetColors } from '@/utils/fetchPresetColors';
 
+/**
+ * Represents a single color preset pulled from Firebase.
+ */
 type PresetColor = {
   id: string;
   name: string;
   hex: string;
 };
 
+/**
+ * Props for the ColorPicker component.
+ * @param onColorChange - Callback when the user selects a color.
+ */
 type ColorPickerProps = {
   onColorChange: (newColor: string) => void;
 };
@@ -21,6 +28,7 @@ export default function ColorPicker({ onColorChange }: ColorPickerProps) {
       try {
         const colors = await getPresetColors();
         setPresetColors(colors);
+        console.log('🎨 Preset colors loaded:', colors);
       } catch (err) {
         console.error('❌ Failed to load preset colors:', err);
       }
@@ -28,22 +36,22 @@ export default function ColorPicker({ onColorChange }: ColorPickerProps) {
     loadColors();
   }, []);
 
-  const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = e.target.value;
-    setCustomColor(newColor);
-    onColorChange(newColor);
+  const handleColorChange = (color: string) => {
+    setCustomColor(color);
+    onColorChange(color);
+    console.log(`🟢 Apparel color set to: ${color}`);
   };
 
   return (
-    <div style={{ padding: '1rem', color: 'white' }}>
-      <label style={{ display: 'block', marginBottom: '0.5rem' }}>Preset Colors:</label>
-
+    <div style={{ padding: '1rem', color: 'white' }} data-testid="color-picker">
+      <label>Preset Colors:</label>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
-        {presetColors.map(c => (
+        {presetColors.map((c) => (
           <button
             key={c.id}
-            onClick={() => onColorChange(c.hex)}
             title={c.name}
+            data-testid={`preset-${c.name}`}
+            onClick={() => handleColorChange(c.hex)}
             style={{
               backgroundColor: c.hex,
               width: '32px',
@@ -56,11 +64,13 @@ export default function ColorPicker({ onColorChange }: ColorPickerProps) {
         ))}
       </div>
 
-      <label style={{ display: 'block', marginBottom: '0.25rem' }}>Custom Color:</label>
+      <label htmlFor="custom-color">Custom Color:</label>
       <input
+        id="custom-color"
         type="color"
         value={customColor}
-        onChange={handleCustomChange}
+        onChange={(e) => handleColorChange(e.target.value)}
+        data-testid="custom-color"
         style={{
           width: '100%',
           height: '2rem',

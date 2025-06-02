@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import ColorPicker from '@/components/Controls/ColorPicker';
-import DecalPanel from '@/components/Controls/DecalPanel';
-import CustomizerCanvas from '@/components/Customizer/CustomizerCanvas';
+import ColorPicker from '@/components/Controls/ColorPicker/ColorPicker';
+import DecalPanel from '@/components/Controls/DecalPanel/DecalPanel';
+import CustomizerCanvas from '@/components/Customizer/CustomizerCanvas/CustomizerCanvas';
 import styles from './customizer.module.css';
 import { calculatePrice } from '@/utils/calculatePrice';
 import { fetchPrices } from '@/utils/fetchPrice';
