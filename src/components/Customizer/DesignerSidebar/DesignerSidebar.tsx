@@ -1,8 +1,6 @@
 
 import React from 'react';
-import DesignToolsPanel from './DesignToolsPanel';
-import LivePricingBox from './LivePricingBox';
-import ProductOptionsForm from './ProductOptionsForm';
+
 
 /**
  * Main sidebar containing tools, product options, and pricing
@@ -20,9 +18,7 @@ export default function DesignerSidebar() {
         height: '100vh',
         overflowY: 'auto'
       }}>
-        <DesignToolsPanel />
-        <ProductOptionsForm />
-        <LivePricingBox />
+
       </aside>
     );
   } catch (err) {

@@ -17,6 +17,10 @@ type ColorZone = {
   color: string;
 };
 
+type MultizoneCustomizerProps = {
+  view: 'front' | 'side' | 'back';
+};
+
 const defaultZones: ColorZone[] = [
   { id: 'body', name: 'Body', color: '#ffffff' },
   { id: 'sleeves', name: 'Sleeves', color: '#ffffff' },
@@ -26,7 +30,7 @@ const defaultZones: ColorZone[] = [
   { id: 'cuffs', name: 'Cuffs', color: '#ffffff' },
 ];
 
-export default function MultizoneCustomizer() {
+export default function MultizoneCustomizer({ view }: MultizoneCustomizerProps) {
   const [zones, setZones] = useState<ColorZone[]>(defaultZones);
   const [selectedZone, setSelectedZone] = useState<string>('body');
   const [presetColors, setPresetColors] = useState<PresetColor[]>([]);
@@ -46,8 +50,8 @@ export default function MultizoneCustomizer() {
     <div className={styles.customizerWrapper}>
       <div className={styles.canvasPanel}>
         <MultizoneCanvas
-          baseImage="/apparel/jackets/jacket-front.png"
-          view="front"
+          baseImage={`/apparel/jackets/jacket-${view}.png`}
+          view={view}
           zones={zones}
         />
       </div>
