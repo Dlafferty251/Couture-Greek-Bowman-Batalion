@@ -1,9 +1,11 @@
-
 'use client';
 import React, { useState } from 'react';
 
 type PayButtonProps = {
-  lineItems?: { price_data: { currency: string; product_data: { name: string }; unit_amount: number }; quantity: number }[];
+  lineItems?: {
+    price_data: { currency: string; product_data: { name: string }; unit_amount: number };
+    quantity: number;
+  }[];
 };
 
 export default function PayButton({
@@ -45,7 +47,11 @@ export default function PayButton({
   };
 
   return (
-    <button onClick={handleClick} disabled={loading} style={{ padding: '0.5em 1em', fontSize: '1rem' }}>
+    <button
+      onClick={handleClick}
+      disabled={loading}
+      style={{ padding: '0.5em 1em', fontSize: '1rem' }}
+    >
       {loading ? 'Redirecting…' : 'Pay Now'}
     </button>
   );

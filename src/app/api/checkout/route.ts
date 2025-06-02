@@ -10,8 +10,9 @@ if (!process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY!);
 
+
 export async function POST(request: Request) {
-  const body = await request.json().catch(() => ({} as any));
+  const body = await request.json().catch(() => ({}) as any);
   const origin = request.headers.get('origin') || 'http://localhost:3000';
 
   try {
