@@ -1,0 +1,54 @@
+.canvasWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+.imageContainer {
+  position: relative;
+}
+.baseImage {
+  width: 100%;
+  display: block;
+}
+.overlaySvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.pickerWrapper {
+  margin-top: 2rem;
+}
+.heading {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.colorSwatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+.colorInput {
+  width: 100%;
+  height: 40px;
+  margin-bottom: 0.5rem;
+}
+.applyBtn {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}

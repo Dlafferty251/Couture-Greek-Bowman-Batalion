@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ColorPicker from '@/components/Controls/ColorPicker/ColorPicker';
 import DecalPanel from '@/components/Controls/DecalPanel/DecalPanel';
 import CustomizerCanvas from '@/components/Customizer/CustomizerCanvas/CustomizerCanvas';
+import MultizoneCustomizer from '@/components/Customizer/Multizone/MultizoneCustomizer';
 import styles from './customizer.module.css';
 import { calculatePrice } from '@/utils/calculatePrice';
 import { fetchPrices } from '@/utils/fetchPrice';
@@ -27,7 +28,7 @@ export default function CustomizerPage() {
   const [view, setView] = useState<View>('front');
   const [apparelType, setApparelType] = useState<ApparelType>('tshirt');
   const [shirtColor, setShirtColor] = useState<string>('#ffffff');
-  const [uploadedDecals, setUploadedDecals] = useState<string[]>([]); // for UI preview only
+  const [uploadedDecals, setUploadedDecals] = useState<string[]>([]);
   const [placedDecals, setPlacedDecals] = useState<CanvasDecal[]>([]);
   const [allColors, setAllColors] = useState<any[]>([]);
   const [allDecals, setAllDecals] = useState<any[]>([]);
@@ -101,16 +102,19 @@ export default function CustomizerPage() {
           ))}
         </div>
 
-<CustomizerCanvas
-  mode={mode}
-  view={view}
-  shirtColor={shirtColor}
-  decalImage={uploadedDecals[uploadedDecals.length - 1] || null}
-  decals={placedDecals}
-  setDecals={setPlacedDecals}
-  apparelType={apparelType} // 👈 THIS IS WHAT YOU'RE MISSING
-/>
-
+        {apparelType === 'jacket' ? (
+          <MultizoneCustomizer view={view} />
+        ) : (
+          <CustomizerCanvas
+            mode={mode}
+            view={view}
+            shirtColor={shirtColor}
+            decalImage={uploadedDecals[uploadedDecals.length - 1] || null}
+            decals={placedDecals}
+            setDecals={setPlacedDecals}
+            apparelType={apparelType}
+          />
+        )}
 
         <div className={styles.creativeBadge}>
           <div className={styles.glowRing} />
