@@ -1,0 +1,487 @@
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<!-- CSS Styles -->
+<style>
+  /* Container styles */
+  .jacket-builder {
+    font-family: sans-serif;
+    max-width: 1000px;
+    margin: auto;
+    padding: 2rem;
+  }
+
+  /* Decal tabs styles */
+  .decal-tabs {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* Layout styles */
+  .layout-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+  }
+
+  .option-panel {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .button-group {
+    margin-top: 2rem;
+  }
+
+  .save-button {
+    padding: 0.5rem 1rem;
+    background: orange;
+    border: none;
+    border-radius: 4px;
+    color: white;
+  }
+
+  .cart-button {
+    padding: 0.5rem 1rem;
+    background: red;
+    border: none;
+    border-radius: 4px;
+    color: white;
+  }
+
+  /* Canvas styles */
+  .canvas-panel {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .decal-container {
+    position: relative;
+    width: 300px;
+    margin-bottom: 1rem;
+  }
+
+  .preview-image {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+
+  .summary {
+    font-weight: bold;
+  }
+
+  /* Modal styles */
+  .decal-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow: auto;
+    text-align: center;
+  }
+
+  .modal-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .close-button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+  }
+
+  /* Decal styles */
+  .decal {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 60px;
+    cursor: move;
+    z-index: 10;
+  }
+
+  .decal-category {
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .category-button {
+    padding: 0.5rem;
+    width: 100%;
+    background: #eee;
+    border: 1px solid #aaa;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .decal-dropdown {
+    display: none;
+    padding: 0.5rem;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .decal-thumbnail {
+    width: 60px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .modal-thumbnail {
+    width: 80px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+</style>
+<script src="firebase-config.js"></script>
+
+<!-- DESIGN STUDIO -->
+<div id="jacket-builder" class="jacket-builder">
+  <h2>Design Your Varsity Jacket</h2>
+
+  <!-- DECAL FILTER TABS -->
+  <div id="decal-tabs" class="decal-tabs"></div>
+
+  <div class="layout-container">
+    <!-- LEFT: Options + Buttons -->
+    <div class="option-panel">
+      <div class="form-group">
+        <label
+          >Choose Color:
+          <select id="color-picker" onchange="updatePreview()">
+            <option>Loading...</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-group">
+        <label
+          >Choose Size:
+          <select id="size-picker">
+            <option>Small</option>
+            <option>Medium</option>
+            <option>Large</option>
+            <option>XL</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-group">
+        <label
+          >Material:
+          <select id="material-picker">
+            <option>Wool</option>
+            <option>Leather</option>
+            <option>Satin</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label
+          >Body Color:
+          <input type="color" id="body-color" value="#FF0000" />
+        </label>
+      </div>
+      <div class="form-group">
+        <label
+          >Sleeves Color:
+          <input type="color" id="sleeves-color" value="#FFFFFF" />
+        </label>
+      </div>
+      <div class="form-group">
+        <label
+          >Collar Color:
+          <input type="color" id="collar-color" value="#000000" />
+        </label>
+      </div>
+
+      <div class="button-group">
+        <button onclick="alert('Saving not implemented yet')" class="save-button">
+          Save Design
+        </button>
+        <button onclick="alert('Checkout not implemented yet')" class="cart-button">
+          Add to Cart
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Design Canvas -->
+    <div class="canvas-panel">
+      <div id="decal-container" class="decal-container">
+        <img id="preview" src="" alt="Jacket preview" class="preview-image" />
+      </div>
+      <div id="summary" class="summary"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DECAL PREVIEW MODAL -->
+<div id="decal-modal" class="decal-modal">
+  <div class="modal-content">
+    <h3 id="modal-title">Select a Decal</h3>
+    <div id="modal-content" class="modal-grid"></div>
+    <br />
+    <button onclick="closeModal()" class="close-button">Close</button>
+  </div>
+</div>
+
+<!-- InteractJS for dragging -->
+<script src="https://cdn.jsdelivr.net/npm/@interactjs/interactjs/dist/interact.min.js"></script>
+<script>
+  window.onload = async () => {
+    if (!firebase || !firebase.firestore) {
+      console.error(
+        '[🚫 Firebase is not initialized.] Please make sure firebase.initializeApp(...) and firestore setup is loaded before this script.'
+      );
+      return;
+    }
+
+    const db = firebase.firestore();
+
+    const colorPicker = document.getElementById('color-picker');
+    const summaryDiv = document.getElementById('summary');
+    const sizePicker = document.getElementById('size-picker');
+    const materialPicker = document.getElementById('material-picker');
+    const previewImg = document.getElementById('preview');
+    const decalContainer = document.getElementById('decal-container');
+
+    let jacketViews = {};
+
+    async function fetchJacketViews() {
+      try {
+        const doc = await db.collection('apparel').doc('varsity_jacket').get();
+        const data = doc.data();
+        if (!data?.jacketViews) throw new Error("Missing 'jacketViews' in Firestore.");
+        jacketViews = data.jacketViews;
+        loadJacketView('front');
+      } catch (err) {
+        console.error('[🧨 Firestore Jacket Fetch Error]:', err);
+      }
+    }
+
+    async function loadJacketView(view = 'front') {
+      if (!jacketViews[view]) return console.warn(`[⚠️ No SVG for view: ${view}]`);
+      try {
+        const res = await fetch(jacketViews[view]);
+        const svgText = await res.text();
+        decalContainer.innerHTML = svgText;
+        console.log(`[🧥 Loaded SVG View]: ${view}`);
+        applyZoneColors();
+      } catch (err) {
+        console.error(`[❌ Failed to load SVG for view: ${view}]`, err);
+      }
+    }
+
+    async function loadColors() {
+      try {
+        const snapshot = await db
+          .collection('apparel')
+          .doc('varsity_jacket')
+          .collection('colors')
+          .get();
+        colorPicker.innerHTML = '';
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const option = document.createElement('option');
+          option.value = JSON.stringify({
+            imageUrl: data.imageUrls.front,
+            name: data.name,
+            price: data.price,
+          });
+          option.textContent = `${data.name} ($${data.price})`;
+          colorPicker.appendChild(option);
+        });
+
+        updatePreview();
+      } catch (error) {
+        console.error('[🔥 Firebase Error - loadColors]:', error);
+      }
+    }
+
+    function updatePreview() {
+      try {
+        const selectedColor = JSON.parse(colorPicker.value);
+        const size = sizePicker.value;
+        const material = materialPicker.value;
+
+        previewImg.src = selectedColor.imageUrl;
+        console.log('[🎨 Jacket Updated] ->', selectedColor);
+
+        summaryDiv.innerHTML = `
+          <strong>Color:</strong> ${selectedColor.name}<br>
+          <strong>Size:</strong> ${size}<br>
+          <strong>Material:</strong> ${material}<br>
+          <strong>Price:</strong> $${selectedColor.price}
+        `;
+      } catch (err) {
+        console.error('[🧨 Error updating preview]:', err);
+      }
+    }
+
+    function makeDraggable(el) {
+      interact(el).draggable({
+        listeners: {
+          move(event) {
+            const target = event.target;
+            const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+            const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+            target.style.transform = `translate(${x}px, ${y}px)`;
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+          },
+          end(event) {
+            const { target } = event;
+            const x = target.getAttribute('data-x');
+            const y = target.getAttribute('data-y');
+            console.log(`[📦 Decal moved]: ${target.alt} to (${x}, ${y})`);
+          },
+        },
+      });
+    }
+
+    function addDecalToCanvas(url, name) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = name;
+      img.title = name;
+      img.className = 'decal';
+      img.setAttribute('data-x', 0);
+      img.setAttribute('data-y', 0);
+      decalContainer.appendChild(img);
+      makeDraggable(img);
+      console.log(`[✨ Decal added from modal]: ${name}`);
+    }
+
+    function openModal(category, decals) {
+      const modal = document.getElementById('decal-modal');
+      const title = document.getElementById('modal-title');
+      const content = document.getElementById('modal-content');
+
+      title.textContent = `Select a "${category}" Decal`;
+      content.innerHTML = '';
+
+      decals.forEach(({ url, name }) => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = name;
+        img.title = name;
+        img.className = 'modal-thumbnail';
+        img.onclick = () => {
+          addDecalToCanvas(url, name);
+          closeModal();
+        };
+        content.appendChild(img);
+      });
+
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('decal-modal').style.display = 'none';
+    }
+
+    function applyZoneColors() {
+      const svg = decalContainer.querySelector('svg');
+      if (!svg) return;
+
+      const bodyColor = document.getElementById('body-color').value;
+      const sleevesColor = document.getElementById('sleeves-color').value;
+      const collarColor = document.getElementById('collar-color').value;
+
+      svg.getElementById('front_torso')?.setAttribute('fill', bodyColor);
+      svg.getElementById('front_right_sleeve')?.setAttribute('fill', sleevesColor);
+      svg.getElementById('front_left_sleeve')?.setAttribute('fill', sleevesColor);
+      svg.getElementById('front_collar')?.setAttribute('fill', collarColor);
+      
+
+      console.log('[🎨 Zone Colors Applied]', { bodyColor, sleevesColor, collarColor });
+    }
+
+    async function renderCategoryTabs() {
+      const tabContainer = document.getElementById('decal-tabs');
+      tabContainer.innerHTML = '';
+
+      const snapshot = await db.collection('decals').get();
+      const decalsByCategory = {};
+
+      snapshot.forEach(doc => {
+        const { category, url, name } = doc.data();
+        if (!category) return;
+        if (!decalsByCategory[category]) decalsByCategory[category] = [];
+        decalsByCategory[category].push({ url, name });
+      });
+
+      Object.entries(decalsByCategory).forEach(([category, decals]) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'decal-category';
+
+        const btn = document.createElement('button');
+        btn.textContent = `${category} ▼`;
+        btn.className = 'category-button';
+        btn.onclick = () => {
+          const dropdown = wrapper.querySelector('.decal-dropdown');
+          const isVisible = dropdown.style.display === 'block';
+          dropdown.style.display = isVisible ? 'none' : 'block';
+        };
+
+        const dropdown = document.createElement('div');
+        dropdown.className = 'decal-dropdown';
+
+        decals.forEach(({ url, name }) => {
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = name;
+          img.title = name;
+          img.className = 'decal-thumbnail';
+          img.onclick = () => addDecalToCanvas(url, name);
+          dropdown.appendChild(img);
+        });
+
+        wrapper.appendChild(btn);
+        wrapper.appendChild(dropdown);
+        tabContainer.appendChild(wrapper);
+      });
+
+      console.log('[🧩 Decal categories rendered as dropdowns]');
+    }
+    
+    ['body', 'sleeves', 'collar'].forEach(zone => {
+  document.getElementById(`${zone}-color`).addEventListener('input', applyZoneColors);
+});
+    // GO TIME
+    await fetchJacketViews();
+    await loadColors();
+    await renderCategoryTabs();
+  };
+</script>
