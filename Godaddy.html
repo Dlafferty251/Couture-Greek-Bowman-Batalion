@@ -504,49 +504,40 @@ async function loadColors(org = 'all') {
 
     function closeModal() {
       document.getElementById('decal-modal').style.display = 'none';
-    }
-function applyZoneColors() {
+    }function applyZoneColors() {
   const svg = document.querySelector('svg');
   if (!svg) {
     console.warn('[⛔ SVG not found in DOM]');
     return;
   }
 
-  const bodyColor = document.getElementById('body-color').value;
-  const sleevesColor = document.getElementById('sleeves-color').value;
-  const cuffsColor = document.getElementById('cuffs-color').value;
-  const collarColor = document.getElementById('collar-color').value;
-  const linesColor = document.getElementById('lines-color').value;
-  const buttonsColor = document.getElementById('buttons-color').value;
+  const zones = {
+    'front_torso': document.getElementById('body-color').value,
+    'front_pockets': document.getElementById('body-color').value,
+    'front_left_sleeve': document.getElementById('sleeves-color').value,
+    'front_right_sleeve': document.getElementById('sleeves-color').value,
+    'front_left_cuff': document.getElementById('cuffs-color').value,
+    'front_right_cuff': document.getElementById('cuffs-color').value,
+    'front_bottom': document.getElementById('cuffs-color').value,
+    'front_collar': document.getElementById('collar-color').value,
+    'front_left_sleeve_lines': document.getElementById('lines-color').value,
+    'front_right_sleeve_lines': document.getElementById('lines-color').value,
+    'front_collar_lines': document.getElementById('lines-color').value,
+    'button_group': document.getElementById('buttons-color').value,
+  };
 
-  // 🧥 Body
-  svg.getElementById('front_torso')?.setAttribute('fill', bodyColor);
-  svg.getElementById('front_pockets')?.setAttribute('fill', bodyColor);
-
-  // 💪 Sleeves
-  svg.getElementById('front_left_sleeve')?.setAttribute('fill', sleevesColor);
-  svg.getElementById('front_right_sleeve')?.setAttribute('fill', sleevesColor);
-
-  // 👊 Cuffs
-  svg.getElementById('front_left_cuff')?.setAttribute('fill', cuffsColor);
-  svg.getElementById('front_right_cuff')?.setAttribute('fill', cuffsColor);
-  svg.getElementById('front_bottom')?.setAttribute('fill', cuffsColor);
-
-  // 🧣 Collar
-  svg.getElementById('front_collar')?.setAttribute('fill', collarColor);
-
-  // ✨ Lines
-  svg.getElementById('front_left_sleeve_lines')?.setAttribute('fill', linesColor);
-  svg.getElementById('front_right_sleeve_lines')?.setAttribute('fill', linesColor);
-  svg.getElementById('front_collar_lines')?.setAttribute('fill', linesColor);
-
-  // 🔘 Buttons
-  svg.getElementById('button_group')?.setAttribute('fill', buttonsColor);
+  Object.entries(zones).forEach(([id, color]) => {
+    const el = svg.getElementById(id);
+    if (el) {
+      el.removeAttribute('style'); // 🔥 clear inline style first
+      el.setAttribute('fill', color); // then apply fill
+    }
+  });
 
   console.log('[🎨 Zone colors applied]');
-  console.log('[🧪 SVG Elements]', [...document.querySelectorAll('svg *')].map(e => e.id).filter(Boolean));
-
+  console.log('[🧪 SVG Elements]', [...svg.querySelectorAll('[id]')].map(e => `${e.id} (${e.getAttribute('fill')})`));
 }
+
 
 
     async function renderCategoryTabs() {
@@ -606,8 +597,9 @@ function applyZoneColors() {
       await loadColors();
       await loadTemplates();
       ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
-        document.getElementById(`${zone}-color`)?.addEventListener('change', applyZoneColors);
+        document.getElementById(`${zone}-color`).addEventListener('change', applyZoneColors);
       });
+      console.log('[✅ All event listeners attached]');
     });
 
     // GO TIME
