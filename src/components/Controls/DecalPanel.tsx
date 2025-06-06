@@ -61,7 +61,7 @@ export default function DecalPanel({ onDecalSelect }: Props) {
       </label>
 
       <div className={styles.categoryButtons}>
-        {['AKA', 'DELTA', 'KAPPA', 'APA', 'OMEGA', 'ZETA', 'SGRHO', 'IOTA'].map(category => (
+        {['AKA', 'DELTA', 'KAPPA', 'APA', 'OMEGA', 'ZETA', 'SGRHO', 'IOTA', 'PBS'].map(category => (
           <button
             key={category}
             className={`${styles.categoryButton} ${
