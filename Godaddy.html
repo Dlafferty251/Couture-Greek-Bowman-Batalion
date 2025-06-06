@@ -1,676 +1,741 @@
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Couture Greek - Varsity Jacket Designer</title>
 
-<!-- CSS Styles -->
-<style>
-  /* Container styles */
-  .jacket-builder {
-    font-family: sans-serif;
-    max-width: 1000px;
-    margin: auto;
-    padding: 2rem;
-  }
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-  /* Decal tabs styles */
-  .decal-tabs {
-    margin-bottom: 1rem;
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
+    <!-- html2canvas for screenshot capture -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  /* Layout styles */
-  .layout-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    justify-content: space-between;
-  }
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+      emailjs.init('your_public_key_here'); // Replace with your EmailJS public key
+    </script>
 
-  .option-panel {
-    flex: 1;
-    min-width: 280px;
-  }
+    <!-- CSS Styles -->
+    <style>
+      /* Container styles */
+      .jacket-builder {
+        font-family: sans-serif;
+        max-width: 1000px;
+        margin: auto;
+        padding: 2rem;
+      }
 
-  .form-group {
-    margin-bottom: 1rem;
-  }
+      /* Decal tabs styles */
+      .decal-tabs {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
 
-  .button-group {
-    margin-top: 2rem;
-  }
+      /* Layout styles */
+      .layout-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: space-between;
+      }
 
-  .save-button {
-    padding: 0.5rem 1rem;
-    background: orange;
-    border: none;
-    border-radius: 4px;
-    color: white;
-  }
+      .option-panel {
+        flex: 1;
+        min-width: 280px;
+      }
 
-  .cart-button {
-    padding: 0.5rem 1rem;
-    background: red;
-    border: none;
-    border-radius: 4px;
-    color: white;
-  }
+      .form-group {
+        margin-bottom: 1rem;
+      }
 
-  /* Canvas styles */
-  .canvas-panel {
-    flex: 1;
-    min-width: 300px;
-  }
+      .button-group {
+        margin-top: 2rem;
+      }
 
-  .decal-container {
-    position: relative;
-    width: 300px;
-    margin-bottom: 1rem;
-  }
+      .save-button {
+        padding: 0.5rem 1rem;
+        background: orange;
+        border: none;
+        border-radius: 4px;
+        color: white;
+      }
 
-  .preview-image {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
+      .cart-button {
+        padding: 0.5rem 1rem;
+        background: red;
+        border: none;
+        border-radius: 4px;
+        color: white;
+      }
 
-  .summary {
-    font-weight: bold;
-  }
+      /* Canvas styles */
+      .canvas-panel {
+        flex: 1;
+        min-width: 300px;
+      }
 
-  /* Modal styles */
-  .decal-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
+      .decal-container {
+        position: relative;
+        width: 300px;
+        margin-bottom: 1rem;
+      }
 
-  .modal-content {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    max-width: 90vw;
-    max-height: 80vh;
-    overflow: auto;
-    text-align: center;
-  }
+      .preview-image {
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
 
-  .modal-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-  }
+      .summary {
+        font-weight: bold;
+      }
 
-  .close-button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-  }
+      /* Modal styles */
+      .decal-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
 
-  /* Decal styles */
-  .decal {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    width: 60px;
-    cursor: move;
-    z-index: 10;
-  }
+      .modal-content {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        max-width: 90vw;
+        max-height: 80vh;
+        overflow: auto;
+        text-align: center;
+      }
 
-  .decal-category {
-    margin-bottom: 1rem;
-    width: 100%;
-  }
+      .modal-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+      }
 
-  .category-button {
-    padding: 0.5rem;
-    width: 100%;
-    background: #eee;
-    border: 1px solid #aaa;
-    cursor: pointer;
-    font-weight: bold;
-  }
+      .close-button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+      }
 
-  .decal-dropdown {
-    display: none;
-    padding: 0.5rem;
-    background: #f9f9f9;
-    border: 1px solid #ccc;
-    margin-top: 0.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
+      /* Decal styles */
+      .decal {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        width: 60px;
+        cursor: move;
+        z-index: 10;
+      }
 
-  .decal-thumbnail {
-    width: 60px;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
+      .decal-category {
+        margin-bottom: 1rem;
+        width: 100%;
+      }
 
-  .modal-thumbnail {
-    width: 80px;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
+      .category-button {
+        padding: 0.5rem;
+        width: 100%;
+        background: #eee;
+        border: 1px solid #aaa;
+        cursor: pointer;
+        font-weight: bold;
+      }
 
-  .decal {
-    touch-action: none; /* Prevents touch from interfering with gestures */
-    user-select: none;
-    will-change: transform;
-    transition: transform 0.05s ease-out;
-  }
-  .decal:hover {
-    opacity: 0.8;
-  }
+      .decal-dropdown {
+        display: none;
+        padding: 0.5rem;
+        background: #f9f9f9;
+        border: 1px solid #ccc;
+        margin-top: 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
 
-  .decal:active {
-    opacity: 0.6;
-  }
-</style>
+      .decal-thumbnail {
+        width: 60px;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
 
-<script src="firebase-config.js"></script>
+      .modal-thumbnail {
+        width: 80px;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
 
-<!-- DESIGN STUDIO -->
-<div id="jacket-builder" class="jacket-builder">
-  <h2>Design Your Varsity Jacket</h2>
+      .decal {
+        touch-action: none; /* Prevents touch from interfering with gestures */
+        user-select: none;
+        will-change: transform;
+        transition: transform 0.05s ease-out;
+      }
+      .decal:hover {
+        opacity: 0.8;
+      }
 
-  <!-- DECAL FILTER TABS -->
-  <div id="decal-tabs" class="decal-tabs"></div>
+      .decal:active {
+        opacity: 0.6;
+      }
+    </style>
 
-  <div class="layout-container">
-    <!-- LEFT: Options + Buttons -->
-    <div class="option-panel">
-      <div class="form-group">
-        <label
-          >Choose Color:
-          <select id="color-picker" onchange="updatePreview()">
-            <option>Loading...</option>
-          </select>
-        </label>
-      </div>
-      <div class="form-group">
-        <label
-          >Choose Size:
-          <select id="size-picker">
-            <option>Small</option>
-            <option>Medium</option>
-            <option>Large</option>
-            <option>XL</option>
-          </select>
-        </label>
-      </div>
-      <div class="form-group">
-        <label
-          >Material:
-          <select id="material-picker">
-            <option>Cloth</option>
-            <option>Leather</option>
-            <option>Satin</option>
-          </select>
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Filter by Org:
-          <select id="org-filter">
-            <option value="all">All Organizations</option>
-            <option value="aka">Alpha Kappa Alpha</option>
-            <option value="dst">Delta Sigma Theta</option>
-            <option value="zpb">Zeta Phi Beta</option>
-            <option value="sgr">Sigma Gamma Rho</option>
-            <option value="apa">Alpha Phi Alpha</option>
-            <option value="kap">Kappa Alpha Psi</option>
-            <option value="opp">Omega Psi Phi</option>
-            <option value="pbs">Phi Beta Sigma</option>
-            <option value="ipt">Iota Phi Theta</option>
-          </select>
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Choose Template:
-          <select id="template-picker">
-            <option selected disabled>Pick a template...</option>
-          </select>
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Body Color:
-          <select id="body-color"></select>
-        </label>
-      </div>
+    <script src="firebase-config.js"></script>
+  </head>
+  <body>
+    <!-- DESIGN STUDIO -->
+    <div id="jacket-builder" class="jacket-builder">
+      <h2>Design Your Varsity Jacket</h2>
 
-      <div class="form-group">
-        <label>
-          Sleeves Color:
-          <select id="sleeves-color"></select>
-        </label>
-      </div>
+      <!-- DECAL FILTER TABS -->
+      <div id="decal-tabs" class="decal-tabs"></div>
 
-      <div class="form-group">
-        <label>
-          Collar Color:
-          <select id="collar-color"></select>
-        </label>
-      </div>
+      <div class="layout-container">
+        <!-- LEFT: Options + Buttons -->
+        <div class="option-panel">
+          <div class="form-group">
+            <label
+              >Choose Color:
+              <select id="color-picker" onchange="updatePreview()">
+                <option>Loading...</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-group">
+            <label
+              >Choose Size:
+              <select id="size-picker">
+                <option>Small</option>
+                <option>Medium</option>
+                <option>Large</option>
+                <option>XL</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-group">
+            <label
+              >Material:
+              <select id="material-picker">
+                <option>Cloth</option>
+                <option>Leather</option>
+                <option>Satin</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              Filter by Org:
+              <select id="org-filter">
+                <option value="all">All Organizations</option>
+                <option value="aka">Alpha Kappa Alpha</option>
+                <option value="dst">Delta Sigma Theta</option>
+                <option value="zpb">Zeta Phi Beta</option>
+                <option value="sgr">Sigma Gamma Rho</option>
+                <option value="apa">Alpha Phi Alpha</option>
+                <option value="kap">Kappa Alpha Psi</option>
+                <option value="opp">Omega Psi Phi</option>
+                <option value="pbs">Phi Beta Sigma</option>
+                <option value="ipt">Iota Phi Theta</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              Choose Template:
+              <select id="template-picker">
+                <option selected disabled>Pick a template...</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              Body Color:
+              <select id="body-color"></select>
+            </label>
+          </div>
 
-      <div class="form-group">
-        <label>
-          Cuffs Color:
-          <select id="cuffs-color"></select>
-        </label>
-      </div>
+          <div class="form-group">
+            <label>
+              Sleeves Color:
+              <select id="sleeves-color"></select>
+            </label>
+          </div>
 
-      <div class="form-group">
-        <label>
-          Lines Color:
-          <select id="lines-color"></select>
-        </label>
-      </div>
+          <div class="form-group">
+            <label>
+              Collar Color:
+              <select id="collar-color"></select>
+            </label>
+          </div>
 
-      <div class="form-group">
-        <label>
-          Buttons Color:
-          <select id="buttons-color"></select>
-        </label>
-      </div>
+          <div class="form-group">
+            <label>
+              Cuffs Color:
+              <select id="cuffs-color"></select>
+            </label>
+          </div>
 
-      <div class="button-group">
-        <button onclick="alert('Saving not implemented yet')" class="save-button">
-          Save Design
-        </button>
-        <button onclick="alert('Checkout not implemented yet')" class="cart-button">
-          Add to Cart
-        </button>
+          <div class="form-group">
+            <label>
+              Lines Color:
+              <select id="lines-color"></select>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>
+              Buttons Color:
+              <select id="buttons-color"></select>
+            </label>
+          </div>
+
+          <div class="button-group">
+            <button onclick="alert('Saving not implemented yet')" class="save-button">
+              Save Design
+            </button>
+            <button onclick="alert('Checkout not implemented yet')" class="cart-button">
+              Add to Cart
+            </button>
+            <button onclick="submitDesign()" class="save-button">Submit Design</button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Design Canvas -->
+        <div class="canvas-panel">
+          <div id="decal-container" class="decal-container">
+            <img id="preview" src="" alt="Jacket preview" class="preview-image" />
+          </div>
+          <div id="summary" class="summary"></div>
+        </div>
       </div>
     </div>
 
-    <!-- RIGHT: Design Canvas -->
-    <div class="canvas-panel">
-      <div id="decal-container" class="decal-container">
-        <img id="preview" src="" alt="Jacket preview" class="preview-image" />
+    <!-- DECAL PREVIEW MODAL -->
+    <div id="decal-modal" class="decal-modal">
+      <div class="modal-content">
+        <h3 id="modal-title">Select a Decal</h3>
+        <div id="modal-content" class="modal-grid"></div>
+        <br />
+        <button onclick="closeModal()" class="close-button">Close</button>
       </div>
-      <div id="summary" class="summary"></div>
     </div>
-  </div>
-</div>
 
-<!-- DECAL PREVIEW MODAL -->
-<div id="decal-modal" class="decal-modal">
-  <div class="modal-content">
-    <h3 id="modal-title">Select a Decal</h3>
-    <div id="modal-content" class="modal-grid"></div>
-    <br />
-    <button onclick="closeModal()" class="close-button">Close</button>
-  </div>
-</div>
+    <!-- InteractJS for dragging -->
+    <script src="https://cdn.jsdelivr.net/npm/@interactjs/interactjs/dist/interact.min.js"></script>
+    <script>
+      window.onload = async () => {
+        if (!firebase || !firebase.firestore) {
+          console.error(
+            '[🚫 Firebase is not initialized.] Please make sure firebase.initializeApp(...) and firestore setup is loaded before this script.'
+          );
+          return;
+        }
 
-<!-- InteractJS for dragging -->
-<script src="https://cdn.jsdelivr.net/npm/@interactjs/interactjs/dist/interact.min.js"></script>
-<script>
-  window.onload = async () => {
-    if (!firebase || !firebase.firestore) {
-      console.error(
-        '[🚫 Firebase is not initialized.] Please make sure firebase.initializeApp(...) and firestore setup is loaded before this script.'
-      );
-      return;
-    }
+        const db = firebase.firestore();
 
-    const db = firebase.firestore();
+        const colorPicker = document.getElementById('color-picker');
+        const summaryDiv = document.getElementById('summary');
+        const sizePicker = document.getElementById('size-picker');
+        const materialPicker = document.getElementById('material-picker');
+        const previewImg = document.getElementById('preview');
+        const decalContainer = document.getElementById('decal-container');
 
-    const colorPicker = document.getElementById('color-picker');
-    const summaryDiv = document.getElementById('summary');
-    const sizePicker = document.getElementById('size-picker');
-    const materialPicker = document.getElementById('material-picker');
-    const previewImg = document.getElementById('preview');
-    const decalContainer = document.getElementById('decal-container');
+        let jacketViews = {};
 
-    let jacketViews = {};
+        async function fetchJacketViews() {
+          try {
+            const doc = await db.collection('apparel').doc('varsity_jacket').get();
+            const data = doc.data();
+            if (!data?.jacketViews) throw new Error("Missing 'jacketViews' in Firestore.");
+            jacketViews = data.jacketViews;
+            loadJacketView('front');
+          } catch (err) {
+            console.error('[🧨 Firestore Jacket Fetch Error]:', err);
+          }
+        }
 
-    async function fetchJacketViews() {
-      try {
-        const doc = await db.collection('apparel').doc('varsity_jacket').get();
-        const data = doc.data();
-        if (!data?.jacketViews) throw new Error("Missing 'jacketViews' in Firestore.");
-        jacketViews = data.jacketViews;
-        loadJacketView('front');
-      } catch (err) {
-        console.error('[🧨 Firestore Jacket Fetch Error]:', err);
-      }
-    }
+        async function loadJacketView(view = 'front') {
+          if (!jacketViews[view]) return console.warn(`[⚠️ No SVG for view: ${view}]`);
+          try {
+            const res = await fetch(jacketViews[view]);
+            const svgText = await res.text();
+            decalContainer.innerHTML = svgText;
+            console.log(`[🧥 Loaded SVG View]: ${view}`);
+            applyZoneColors();
+          } catch (err) {
+            console.error(`[❌ Failed to load SVG for view: ${view}]`, err);
+          }
+        }
 
-    async function loadJacketView(view = 'front') {
-      if (!jacketViews[view]) return console.warn(`[⚠️ No SVG for view: ${view}]`);
-      try {
-        const res = await fetch(jacketViews[view]);
-        const svgText = await res.text();
-        decalContainer.innerHTML = svgText;
-        console.log(`[🧥 Loaded SVG View]: ${view}`);
-        applyZoneColors();
-      } catch (err) {
-        console.error(`[❌ Failed to load SVG for view: ${view}]`, err);
-      }
-    }
+        async function loadTemplates() {
+          try {
+            const picker = document.getElementById('template-picker');
+            picker.innerHTML = `<option selected disabled>Pick a template...</option>`; // reset
 
-    async function loadTemplates() {
-      try {
-        const picker = document.getElementById('template-picker');
-        picker.innerHTML = `<option selected disabled>Pick a template...</option>`; // reset
+            const snapshot = await firebase
+              .firestore()
+              .collection('apparel')
+              .doc('varsity_jacket')
+              .collection('templates')
+              .get();
 
-        const snapshot = await firebase
-          .firestore()
-          .collection('apparel')
-          .doc('varsity_jacket')
-          .collection('templates')
-          .get();
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              console.log('[📁 Template Loaded]', data); // double confirm
+              const option = document.createElement('option');
+              option.value = JSON.stringify(data);
+              option.textContent = data.name || doc.id;
+              picker.appendChild(option);
+            });
 
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          console.log('[📁 Template Loaded]', data); // double confirm
-          const option = document.createElement('option');
-          option.value = JSON.stringify(data);
-          option.textContent = data.name || doc.id;
-          picker.appendChild(option);
-        });
+            picker.addEventListener('change', e => {
+              const data = JSON.parse(e.target.value);
+              ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
+                const select = document.getElementById(`${zone}-color`);
+                if (select && data[zone]) {
+                  select.value = data[zone];
+                  select.dispatchEvent(new Event('change')); // auto apply
+                }
+              });
+              applyZoneColors();
+            });
 
-        picker.addEventListener('change', e => {
-          const data = JSON.parse(e.target.value);
-          ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
+            console.log('[📦 Templates dropdown populated]');
+          } catch (err) {
+            console.error('[❌ Template Load Error]:', err);
+          }
+        }
+
+        async function loadColors(org = 'all') {
+          const colorsRef = firebase.firestore().collection('apparel/varsity_jacket/colors');
+          const query = org === 'all' ? colorsRef : colorsRef.where('tags', 'array-contains', org);
+
+          const snapshot = await query.get();
+
+          const zones = ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'];
+          const colorOptions = {};
+
+          zones.forEach(zone => {
             const select = document.getElementById(`${zone}-color`);
-            if (select && data[zone]) {
-              select.value = data[zone];
-              select.dispatchEvent(new Event('change')); // auto apply
+            select.innerHTML = '';
+            colorOptions[zone] = [];
+
+            // ✅ Add listener if not already added
+            select.addEventListener('change', applyZoneColors);
+          });
+
+          snapshot.forEach(doc => {
+            const { name, hex } = doc.data();
+            zones.forEach(zone => {
+              const select = document.getElementById(`${zone}-color`);
+              const option = document.createElement('option');
+              option.value = hex;
+              option.textContent = `${name} (${hex})`;
+              select.appendChild(option);
+              colorOptions[zone].push(hex);
+            });
+          });
+
+          // ✅ Default value + force-trigger color update
+          zones.forEach(zone => {
+            const select = document.getElementById(`${zone}-color`);
+            if (colorOptions[zone].length > 0) {
+              select.value = colorOptions[zone][0];
+              select.dispatchEvent(new Event('change'));
             }
           });
-          applyZoneColors();
-        });
 
-        console.log('[📦 Templates dropdown populated]');
-      } catch (err) {
-        console.error('[❌ Template Load Error]:', err);
-      }
-    }
-
-    async function loadColors(org = 'all') {
-      const colorsRef = firebase.firestore().collection('apparel/varsity_jacket/colors');
-      const query = org === 'all' ? colorsRef : colorsRef.where('tags', 'array-contains', org);
-
-      const snapshot = await query.get();
-
-      const zones = ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'];
-      const colorOptions = {};
-
-      zones.forEach(zone => {
-        const select = document.getElementById(`${zone}-color`);
-        select.innerHTML = '';
-        colorOptions[zone] = [];
-
-        // ✅ Add listener if not already added
-        select.addEventListener('change', applyZoneColors);
-      });
-
-      snapshot.forEach(doc => {
-        const { name, hex } = doc.data();
-        zones.forEach(zone => {
-          const select = document.getElementById(`${zone}-color`);
-          const option = document.createElement('option');
-          option.value = hex;
-          option.textContent = `${name} (${hex})`;
-          select.appendChild(option);
-          colorOptions[zone].push(hex);
-        });
-      });
-
-      // ✅ Default value + force-trigger color update
-      zones.forEach(zone => {
-        const select = document.getElementById(`${zone}-color`);
-        if (colorOptions[zone].length > 0) {
-          select.value = colorOptions[zone][0];
-          select.dispatchEvent(new Event('change'));
+          console.log(`[🎯 Loaded colors${org !== 'all' ? ` for org: ${org}` : ''}]`);
         }
-      });
 
-      console.log(`[🎯 Loaded colors${org !== 'all' ? ` for org: ${org}` : ''}]`);
-    }
+        function updatePreview() {
+          try {
+            const selectedColor = JSON.parse(colorPicker.value);
+            const size = sizePicker.value;
+            const material = materialPicker.value;
 
-    function updatePreview() {
-      try {
-        const selectedColor = JSON.parse(colorPicker.value);
-        const size = sizePicker.value;
-        const material = materialPicker.value;
+            previewImg.src = selectedColor.imageUrl;
+            console.log('[🎨 Jacket Updated] ->', selectedColor);
 
-        previewImg.src = selectedColor.imageUrl;
-        console.log('[🎨 Jacket Updated] ->', selectedColor);
-
-        summaryDiv.innerHTML = `
-          <strong>Color:</strong> ${selectedColor.name}<br>
-          <strong>Size:</strong> ${size}<br>
-          <strong>Material:</strong> ${material}<br>
-          <strong>Price:</strong> $${selectedColor.price}
-        `;
-      } catch (err) {
-        console.error('[🧨 Error updating preview]:', err);
-      }
-    }
-
-    function makeInteractiveDecal(el) {
-      interact(el)
-        .draggable({
-          listeners: {
-            move(event) {
-              const target = event.target;
-              const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-              const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-              target.style.transform = `
-            translate(${x}px, ${y}px)
-            scale(${target.getAttribute('data-scale') || 1})
-            rotate(${target.getAttribute('data-rotation') || 0}deg)
+            summaryDiv.innerHTML = `
+            <strong>Color:</strong> ${selectedColor.name}<br>
+            <strong>Size:</strong> ${size}<br>
+            <strong>Material:</strong> ${material}<br>
+            <strong>Price:</strong> $${selectedColor.price}
           `;
-              target.setAttribute('data-x', x);
-              target.setAttribute('data-y', y);
-            },
-          },
-        })
-        .gesturable({
-          listeners: {
-            move(event) {
-              const target = event.target;
-
-              const currentScale = parseFloat(target.getAttribute('data-scale')) || 1;
-              const currentRotation = parseFloat(target.getAttribute('data-rotation')) || 0;
-
-              const newScale = currentScale * (1 + event.ds);
-              const newRotation = currentRotation + event.da;
-
-              target.setAttribute('data-scale', newScale);
-              target.setAttribute('data-rotation', newRotation);
-
-              const x = parseFloat(target.getAttribute('data-x')) || 0;
-              const y = parseFloat(target.getAttribute('data-y')) || 0;
-
-              target.style.transform = `
-            translate(${x}px, ${y}px)
-            scale(${newScale})
-            rotate(${newRotation}deg)
-          `;
-            },
-          },
-        });
-    }
-
-    function addDecalToCanvas(url, name) {
-      const img = document.createElement('img');
-      img.src = url;
-      img.alt = name;
-      img.title = name;
-      img.className = 'decal';
-
-      // Set transform data
-      img.setAttribute('data-x', 0);
-      img.setAttribute('data-y', 0);
-      img.setAttribute('data-scale', 1);
-      img.setAttribute('data-rotation', 0);
-
-      // Add interaction
-      decalContainer.appendChild(img);
-      makeInteractiveDecal(img);
-
-      // Allow removal on double-click
-      img.ondblclick = () => {
-        decalContainer.removeChild(img);
-        console.log(`[🗑️ Removed decal]: ${name}`);
-      };
-
-      console.log(`[✨ Added decal]: ${name}`);
-    }
-
-    function openModal(category, decals) {
-      const modal = document.getElementById('decal-modal');
-      const title = document.getElementById('modal-title');
-      const content = document.getElementById('modal-content');
-
-      title.textContent = `Select a "${category}" Decal`;
-      content.innerHTML = '';
-
-      decals.forEach(({ url, name }) => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = name;
-        img.title = name;
-        img.className = 'modal-thumbnail';
-        img.onclick = () => {
-          addDecalToCanvas(url, name);
-          closeModal();
-        };
-        content.appendChild(img);
-      });
-
-      modal.style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('decal-modal').style.display = 'none';
-    }
-
-    function applyZoneColors() {
-      const svg = document.querySelector('svg');
-      if (!svg) {
-        console.warn('[⛔ SVG not found in DOM]');
-        return;
-      }
-
-      const getColor = id => {
-        const select = document.getElementById(`${id}-color`);
-        return select?.value || '#000000'; // fallback color
-      };
-
-      const zones = {
-        front_torso: getColor('body'),
-        front_pockets: getColor('body'),
-        front_left_sleeve: getColor('sleeves'),
-        front_right_sleeve: getColor('sleeves'),
-        front_left_cuff: getColor('cuffs'),
-        front_right_cuff: getColor('cuffs'),
-        front_bottom: getColor('cuffs'),
-        front_collar: getColor('collar'),
-        front_left_sleeve_lines: getColor('lines'),
-        front_right_sleeve_lines: getColor('lines'),
-        front_collar_lines: getColor('lines'),
-        button_group: getColor('buttons'),
-      };
-
-      Object.entries(zones).forEach(([id, color]) => {
-        const el = svg.getElementById(id);
-        if (el && color) {
-          el.removeAttribute('style');
-          el.setAttribute('fill', color);
+          } catch (err) {
+            console.error('[🧨 Error updating preview]:', err);
+          }
         }
-      });
 
-      console.log('[🎨 Zone colors applied]');
-      console.log(
-        '[🧪 SVG Elements]',
-        [...svg.querySelectorAll('[id]')].map(e => `${e.id} (${e.getAttribute('fill')})`)
-      );
-    }
+        function makeInteractiveDecal(el) {
+          interact(el)
+            .draggable({
+              listeners: {
+                move(event) {
+                  const target = event.target;
+                  const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                  const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-    async function renderCategoryTabs() {
-      const tabContainer = document.getElementById('decal-tabs');
-      tabContainer.innerHTML = '';
+                  target.style.transform = `
+              translate(${x}px, ${y}px)
+              scale(${target.getAttribute('data-scale') || 1})
+              rotate(${target.getAttribute('data-rotation') || 0}deg)
+            `;
+                  target.setAttribute('data-x', x);
+                  target.setAttribute('data-y', y);
+                },
+              },
+            })
+            .gesturable({
+              listeners: {
+                move(event) {
+                  const target = event.target;
 
-      const snapshot = await db.collection('decals').get();
-      const decalsByCategory = {};
+                  const currentScale = parseFloat(target.getAttribute('data-scale')) || 1;
+                  const currentRotation = parseFloat(target.getAttribute('data-rotation')) || 0;
 
-      snapshot.forEach(doc => {
-        const { category, url, name } = doc.data();
-        if (!category) return;
-        if (!decalsByCategory[category]) decalsByCategory[category] = [];
-        decalsByCategory[category].push({ url, name });
-      });
+                  const newScale = currentScale * (1 + event.ds);
+                  const newRotation = currentRotation + event.da;
 
-      Object.entries(decalsByCategory).forEach(([category, decals]) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'decal-category';
+                  target.setAttribute('data-scale', newScale);
+                  target.setAttribute('data-rotation', newRotation);
 
-        const btn = document.createElement('button');
-        btn.textContent = `${category} ▼`;
-        btn.className = 'category-button';
-        btn.onclick = () => {
-          const dropdown = wrapper.querySelector('.decal-dropdown');
-          const isVisible = dropdown.style.display === 'block';
-          dropdown.style.display = isVisible ? 'none' : 'block';
-        };
+                  const x = parseFloat(target.getAttribute('data-x')) || 0;
+                  const y = parseFloat(target.getAttribute('data-y')) || 0;
 
-        const dropdown = document.createElement('div');
-        dropdown.className = 'decal-dropdown';
+                  target.style.transform = `
+              translate(${x}px, ${y}px)
+              scale(${newScale})
+              rotate(${newRotation}deg)
+            `;
+                },
+              },
+            });
+        }
 
-        decals.forEach(({ url, name }) => {
+        function addDecalToCanvas(url, name) {
           const img = document.createElement('img');
           img.src = url;
           img.alt = name;
           img.title = name;
-          img.className = 'decal-thumbnail';
-          img.onclick = () => addDecalToCanvas(url, name);
-          dropdown.appendChild(img);
+          img.className = 'decal';
+
+          // Set transform data
+          img.setAttribute('data-x', 0);
+          img.setAttribute('data-y', 0);
+          img.setAttribute('data-scale', 1);
+          img.setAttribute('data-rotation', 0);
+
+          // Add interaction
+          decalContainer.appendChild(img);
+          makeInteractiveDecal(img);
+
+          // Allow removal on double-click
+          img.ondblclick = () => {
+            decalContainer.removeChild(img);
+            console.log(`[🗑️ Removed decal]: ${name}`);
+          };
+
+          console.log(`[✨ Added decal]: ${name}`);
+        }
+
+        function openModal(category, decals) {
+          const modal = document.getElementById('decal-modal');
+          const title = document.getElementById('modal-title');
+          const content = document.getElementById('modal-content');
+
+          title.textContent = `Select a "${category}" Decal`;
+          content.innerHTML = '';
+
+          decals.forEach(({ url, name }) => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = name;
+            img.title = name;
+            img.className = 'modal-thumbnail';
+            img.onclick = () => {
+              addDecalToCanvas(url, name);
+              closeModal();
+            };
+            content.appendChild(img);
+          });
+
+          modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+          document.getElementById('decal-modal').style.display = 'none';
+        }
+
+        function applyZoneColors() {
+          const svg = document.querySelector('svg');
+          if (!svg) {
+            console.warn('[⛔ SVG not found in DOM]');
+            return;
+          }
+
+          const getColor = id => {
+            const select = document.getElementById(`${id}-color`);
+            return select?.value || '#000000'; // fallback color
+          };
+
+          const zones = {
+            front_torso: getColor('body'),
+            front_pockets: getColor('body'),
+            front_left_sleeve: getColor('sleeves'),
+            front_right_sleeve: getColor('sleeves'),
+            front_left_cuff: getColor('cuffs'),
+            front_right_cuff: getColor('cuffs'),
+            front_bottom: getColor('cuffs'),
+            front_collar: getColor('collar'),
+            front_left_sleeve_lines: getColor('lines'),
+            front_right_sleeve_lines: getColor('lines'),
+            front_collar_lines: getColor('lines'),
+            button_group: getColor('buttons'),
+          };
+
+          Object.entries(zones).forEach(([id, color]) => {
+            const el = svg.getElementById(id);
+            if (el && color) {
+              el.removeAttribute('style');
+              el.setAttribute('fill', color);
+            }
+          });
+
+          console.log('[🎨 Zone colors applied]');
+          console.log(
+            '[🧪 SVG Elements]',
+            [...svg.querySelectorAll('[id]')].map(e => `${e.id} (${e.getAttribute('fill')})`)
+          );
+        }
+
+        async function renderCategoryTabs() {
+          const tabContainer = document.getElementById('decal-tabs');
+          tabContainer.innerHTML = '';
+
+          const snapshot = await db.collection('decals').get();
+          const decalsByCategory = {};
+
+          snapshot.forEach(doc => {
+            const { category, url, name } = doc.data();
+            if (!category) return;
+            if (!decalsByCategory[category]) decalsByCategory[category] = [];
+            decalsByCategory[category].push({ url, name });
+          });
+
+          Object.entries(decalsByCategory).forEach(([category, decals]) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'decal-category';
+
+            const btn = document.createElement('button');
+            btn.textContent = `${category} ▼`;
+            btn.className = 'category-button';
+            btn.onclick = () => {
+              const dropdown = wrapper.querySelector('.decal-dropdown');
+              const isVisible = dropdown.style.display === 'block';
+              dropdown.style.display = isVisible ? 'none' : 'block';
+            };
+
+            const dropdown = document.createElement('div');
+            dropdown.className = 'decal-dropdown';
+
+            decals.forEach(({ url, name }) => {
+              const img = document.createElement('img');
+              img.src = url;
+              img.alt = name;
+              img.title = name;
+              img.className = 'decal-thumbnail';
+              img.onclick = () => addDecalToCanvas(url, name);
+              dropdown.appendChild(img);
+            });
+
+            wrapper.appendChild(btn);
+            wrapper.appendChild(dropdown);
+            tabContainer.appendChild(wrapper);
+          });
+
+          console.log('[🧩 Decal categories rendered as dropdowns]');
+        }
+
+        async function submitDesign() {
+          const decalArea = document.getElementById('decal-container');
+          const summaryText = `
+Size: ${document.getElementById('size-picker').value}
+Material: ${document.getElementById('material-picker').value}
+Body Color: ${document.getElementById('body-color').value}
+Sleeves Color: ${document.getElementById('sleeves-color').value}
+Cuffs Color: ${document.getElementById('cuffs-color').value}
+Collar Color: ${document.getElementById('collar-color').value}
+Lines Color: ${document.getElementById('lines-color').value}
+Buttons Color: ${document.getElementById('buttons-color').value}
+Notes: Add customer input here
+    `.trim();
+
+          try {
+            const canvas = await html2canvas(decalArea, {
+              backgroundColor: null,
+              useCORS: true,
+            });
+
+            const imageData = canvas.toDataURL('image/png');
+
+            const templateParams = {
+              to_email: 'dlafferty251@gmail.com', // For testing
+              summary: summaryText,
+              price: '$110.00', // Replace later with dynamic price logic
+              canvas: imageData,
+            };
+
+            emailjs
+              .send('service_biww84y', 'template_2o3e8hl', templateParams)
+              .then(res => {
+                console.log('[✅ Sent]', res);
+                alert('Design submitted successfully! Check your inbox.');
+              })
+              .catch(err => {
+                console.error('[❌ Failed to send]', err);
+                alert('Something went wrong sending the design.');
+              });
+          } catch (err) {
+            console.error('[⚠️ Screenshot Error]', err);
+            alert('Could not capture the jacket preview.');
+          }
+        }
+
+        document.getElementById('org-filter').addEventListener('change', e => {
+          const org = e.target.value;
+          loadColors(org);
         });
 
-        wrapper.appendChild(btn);
-        wrapper.appendChild(dropdown);
-        tabContainer.appendChild(wrapper);
-      });
+        // GO TIME (IN CORRECT ORDER):
+        await fetchJacketViews(); // 🧥 Get SVG
+        await loadColors(); // 🎨 Fill dropdowns
+        await loadTemplates(); // 🧠 Load template styles
+        await renderCategoryTabs(); // 🔖 Show decals
 
-      console.log('[🧩 Decal categories rendered as dropdowns]');
-    }
+        // 💡 Attach listeners AFTER dropdowns exist
+        ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
+          document.getElementById(`${zone}-color`).addEventListener('change', applyZoneColors);
+        });
 
-    document.getElementById('org-filter').addEventListener('change', e => {
-      const org = e.target.value;
-      loadColors(org);
-    });
-
-    // GO TIME (IN CORRECT ORDER):
-    await fetchJacketViews(); // 🧥 Get SVG
-    await loadColors(); // 🎨 Fill dropdowns
-    await loadTemplates(); // 🧠 Load template styles
-    await renderCategoryTabs(); // 🔖 Show decals
-
-    // 💡 Attach listeners AFTER dropdowns exist
-    ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
-      document.getElementById(`${zone}-color`).addEventListener('change', applyZoneColors);
-    });
-
-    console.log('[✅ All event listeners attached]');
-  };
-</script>
+        console.log('[✅ All event listeners attached]');
+      };
+    </script>
+  </body>
+</html>

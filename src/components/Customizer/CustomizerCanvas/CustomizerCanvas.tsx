@@ -249,13 +249,28 @@ export default function CustomizerCanvas({
             />
             {selectedDecal === decal.id && (
               <div className={styles.decalControls}>
-                <button onClick={e => { e.stopPropagation(); rotateDecal(decal.id); }}>
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    rotateDecal(decal.id);
+                  }}
+                >
                   <RotateCw size={14} />
                 </button>
-                <button onClick={e => { e.stopPropagation(); duplicateDecal(decal.id); }}>
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    duplicateDecal(decal.id);
+                  }}
+                >
                   <Copy size={14} />
                 </button>
-                <button onClick={e => { e.stopPropagation(); deleteDecal(decal.id); }}>
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    deleteDecal(decal.id);
+                  }}
+                >
                   <Trash2 size={14} />
                 </button>
               </div>

@@ -15,7 +15,11 @@ type ColorZonePickerProps = {
   setCustomColor: (val: string) => void;
 };
 
-export default function ColorZonePicker({ onSelect, customColor, setCustomColor }: ColorZonePickerProps) {
+export default function ColorZonePicker({
+  onSelect,
+  customColor,
+  setCustomColor,
+}: ColorZonePickerProps) {
   const [presetColors, setPresetColors] = useState<PresetColor[]>([]);
 
   useEffect(() => {
@@ -39,7 +43,7 @@ export default function ColorZonePicker({ onSelect, customColor, setCustomColor 
       <input
         type="color"
         value={customColor}
-        onChange={(e) => setCustomColor(e.target.value)}
+        onChange={e => setCustomColor(e.target.value)}
         className={styles.colorInput}
       />
       <button onClick={() => onSelect(customColor)} className={styles.applyBtn}>

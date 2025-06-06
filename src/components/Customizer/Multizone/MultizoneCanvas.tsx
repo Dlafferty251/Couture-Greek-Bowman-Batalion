@@ -22,7 +22,7 @@ export default function MultizoneCanvas({ baseImage, zones, view }: MultizoneCan
       <div className={styles.imageContainer}>
         <img src={imageSrc} alt={`Apparel ${view}`} className={styles.baseImage} />
         <svg className={styles.overlaySvg} viewBox="0 0 400 400">
-          {zones.map((zone) => {
+          {zones.map(zone => {
             switch (zone.id) {
               case 'body':
                 return (
