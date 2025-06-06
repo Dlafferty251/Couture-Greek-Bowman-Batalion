@@ -163,6 +163,20 @@
     border: 1px solid #ddd;
     border-radius: 4px;
   }
+
+  .decal {
+  touch-action: none; /* Prevents touch from interfering with gestures */
+  user-select: none;
+  will-change: transform;
+  transition: transform 0.05s ease-out;
+}
+  .decal:hover {
+    opacity: 0.8;
+  }
+
+  .decal:active {
+    opacity: 0.6;
+  }
 </style>
 <script src="firebase-config.js"></script>
 
@@ -222,7 +236,14 @@
           </select>
         </label>
       </div>
-
+      <div class="form-group">
+  <label>
+    Choose Template:
+    <select id="template-picker">
+      <option selected disabled>Pick a template...</option>
+    </select>
+  </label>
+</div>
       <div class="form-group">
         <label>
           Body Color:
@@ -341,26 +362,48 @@
         console.error(`[❌ Failed to load SVG for view: ${view}]`, err);
       }
     }
-
+    
     async function loadTemplates() {
-      const snapshot = await getDocs(collection(db, 'templates'));
-      const picker = document.getElementById('template-picker');
+  try {
+    const picker = document.getElementById('template-picker');
+    picker.innerHTML = `<option selected disabled>Pick a template...</option>`; // reset
 
-      snapshot.forEach(doc => {
-        const option = document.createElement('option');
-        option.value = JSON.stringify(doc.data());
-        option.textContent = doc.data().name;
-        picker.appendChild(option);
-      });
+    const snapshot = await firebase.firestore()
+      .collection('apparel')
+      .doc('varsity_jacket')
+      .collection('templates')
+      .get();
 
-      picker.addEventListener('change', e => {
-        const data = JSON.parse(e.target.value);
-        ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
-          document.getElementById(`${zone}-color`).value = data[zone];
-        });
-        applyZoneColors();
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      console.log('[📁 Template Loaded]', data); // double confirm
+      const option = document.createElement('option');
+      option.value = JSON.stringify(data);
+      option.textContent = data.name || doc.id;
+      picker.appendChild(option);
+    });
+
+    picker.addEventListener('change', e => {
+      const data = JSON.parse(e.target.value);
+      ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
+        const select = document.getElementById(`${zone}-color`);
+        if (select && data[zone]) {
+          select.value = data[zone];
+          select.dispatchEvent(new Event('change')); // auto apply
+        }
       });
-    }
+      applyZoneColors();
+    });
+
+    console.log('[📦 Templates dropdown populated]');
+  } catch (err) {
+    console.error('[❌ Template Load Error]:', err);
+  }
+}
+
+
+
+
 async function loadColors(org = 'all') {
   const colorsRef = firebase.firestore().collection('apparel/varsity_jacket/colors');
   const query = org === 'all' ? colorsRef : colorsRef.where('tags', 'array-contains', org);
@@ -403,27 +446,6 @@ async function loadColors(org = 'all') {
   console.log(`[🎯 Loaded colors${org !== 'all' ? ` for org: ${org}` : ''}]`);
 }
 
-
-    async function loadTemplates() {
-      const snapshot = await getDocs(collection(db, 'templates'));
-      const picker = document.getElementById('template-picker');
-
-      snapshot.forEach(doc => {
-        const option = document.createElement('option');
-        option.value = JSON.stringify(doc.data());
-        option.textContent = doc.data().name;
-        picker.appendChild(option);
-      });
-
-      picker.addEventListener('change', e => {
-        const data = JSON.parse(e.target.value);
-        ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
-          document.getElementById(`${zone}-color`).value = data[zone];
-        });
-        applyZoneColors();
-      });
-    }
-
     function updatePreview() {
       try {
         const selectedColor = JSON.parse(colorPicker.value);
@@ -444,39 +466,79 @@ async function loadColors(org = 'all') {
       }
     }
 
-    function makeDraggable(el) {
-      interact(el).draggable({
-        listeners: {
-          move(event) {
-            const target = event.target;
-            const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-            const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-            target.style.transform = `translate(${x}px, ${y}px)`;
-            target.setAttribute('data-x', x);
-            target.setAttribute('data-y', y);
-          },
-          end(event) {
-            const { target } = event;
-            const x = target.getAttribute('data-x');
-            const y = target.getAttribute('data-y');
-            console.log(`[📦 Decal moved]: ${target.alt} to (${x}, ${y})`);
-          },
-        },
-      });
-    }
+    function makeInteractiveDecal(el) {
+  interact(el)
+    .draggable({
+      listeners: {
+        move(event) {
+          const target = event.target;
+          const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+          const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+          target.style.transform = `
+            translate(${x}px, ${y}px)
+            scale(${target.getAttribute('data-scale') || 1})
+            rotate(${target.getAttribute('data-rotation') || 0}deg)
+          `;
+          target.setAttribute('data-x', x);
+          target.setAttribute('data-y', y);
+        }
+      }
+    })
+    .gesturable({
+      listeners: {
+        move(event) {
+          const target = event.target;
+
+          const currentScale = parseFloat(target.getAttribute('data-scale')) || 1;
+          const currentRotation = parseFloat(target.getAttribute('data-rotation')) || 0;
+
+          const newScale = currentScale * (1 + event.ds);
+          const newRotation = currentRotation + event.da;
+
+          target.setAttribute('data-scale', newScale);
+          target.setAttribute('data-rotation', newRotation);
+
+          const x = parseFloat(target.getAttribute('data-x')) || 0;
+          const y = parseFloat(target.getAttribute('data-y')) || 0;
+
+          target.style.transform = `
+            translate(${x}px, ${y}px)
+            scale(${newScale})
+            rotate(${newRotation}deg)
+          `;
+        }
+      }
+    });
+}
+
 
     function addDecalToCanvas(url, name) {
-      const img = document.createElement('img');
-      img.src = url;
-      img.alt = name;
-      img.title = name;
-      img.className = 'decal';
-      img.setAttribute('data-x', 0);
-      img.setAttribute('data-y', 0);
-      decalContainer.appendChild(img);
-      makeDraggable(img);
-      console.log(`[✨ Decal added from modal]: ${name}`);
-    }
+  const img = document.createElement('img');
+  img.src = url;
+  img.alt = name;
+  img.title = name;
+  img.className = 'decal';
+
+  // Set transform data
+  img.setAttribute('data-x', 0);
+  img.setAttribute('data-y', 0);
+  img.setAttribute('data-scale', 1);
+  img.setAttribute('data-rotation', 0);
+
+  // Add interaction
+  decalContainer.appendChild(img);
+  makeInteractiveDecal(img);
+
+  // Allow removal on double-click
+  img.ondblclick = () => {
+    decalContainer.removeChild(img);
+    console.log(`[🗑️ Removed decal]: ${name}`);
+  };
+
+  console.log(`[✨ Added decal]: ${name}`);
+}
+
 
     function openModal(category, decals) {
       const modal = document.getElementById('decal-modal');
@@ -511,26 +573,31 @@ async function loadColors(org = 'all') {
     return;
   }
 
+  const getColor = id => {
+    const select = document.getElementById(`${id}-color`);
+    return select?.value || '#000000'; // fallback color
+  };
+
   const zones = {
-    'front_torso': document.getElementById('body-color').value,
-    'front_pockets': document.getElementById('body-color').value,
-    'front_left_sleeve': document.getElementById('sleeves-color').value,
-    'front_right_sleeve': document.getElementById('sleeves-color').value,
-    'front_left_cuff': document.getElementById('cuffs-color').value,
-    'front_right_cuff': document.getElementById('cuffs-color').value,
-    'front_bottom': document.getElementById('cuffs-color').value,
-    'front_collar': document.getElementById('collar-color').value,
-    'front_left_sleeve_lines': document.getElementById('lines-color').value,
-    'front_right_sleeve_lines': document.getElementById('lines-color').value,
-    'front_collar_lines': document.getElementById('lines-color').value,
-    'button_group': document.getElementById('buttons-color').value,
+    'front_torso': getColor('body'),
+    'front_pockets': getColor('body'),
+    'front_left_sleeve': getColor('sleeves'),
+    'front_right_sleeve': getColor('sleeves'),
+    'front_left_cuff': getColor('cuffs'),
+    'front_right_cuff': getColor('cuffs'),
+    'front_bottom': getColor('cuffs'),
+    'front_collar': getColor('collar'),
+    'front_left_sleeve_lines': getColor('lines'),
+    'front_right_sleeve_lines': getColor('lines'),
+    'front_collar_lines': getColor('lines'),
+    'button_group': getColor('buttons'),
   };
 
   Object.entries(zones).forEach(([id, color]) => {
     const el = svg.getElementById(id);
-    if (el) {
-      el.removeAttribute('style'); // 🔥 clear inline style first
-      el.setAttribute('fill', color); // then apply fill
+    if (el && color) {
+      el.removeAttribute('style');
+      el.setAttribute('fill', color);
     }
   });
 
@@ -593,18 +660,18 @@ async function loadColors(org = 'all') {
       loadColors(org);
     });
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      await loadColors();
-      await loadTemplates();
-      ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
-        document.getElementById(`${zone}-color`).addEventListener('change', applyZoneColors);
-      });
-      console.log('[✅ All event listeners attached]');
-    });
+// GO TIME (IN CORRECT ORDER):
+await fetchJacketViews();       // 🧥 Get SVG
+await loadColors();             // 🎨 Fill dropdowns
+await loadTemplates();          // 🧠 Load template styles
+await renderCategoryTabs();     // 🔖 Show decals
 
-    // GO TIME
-    await fetchJacketViews();
-    await loadColors();
-    await renderCategoryTabs();
+// 💡 Attach listeners AFTER dropdowns exist
+['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
+  document.getElementById(`${zone}-color`).addEventListener('change', applyZoneColors);
+});
+
+console.log('[✅ All event listeners attached]');
+  
   };
 </script>
