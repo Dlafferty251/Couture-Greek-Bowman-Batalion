@@ -199,29 +199,69 @@
         <label
           >Material:
           <select id="material-picker">
-            <option>Wool</option>
+            <option>Cloth</option>
             <option>Leather</option>
             <option>Satin</option>
           </select>
         </label>
       </div>
+      <div class="form-group">
+        <label>
+          Filter by Org:
+          <select id="org-filter">
+            <option value="all">All Organizations</option>
+            <option value="aka">Alpha Kappa Alpha</option>
+            <option value="dst">Delta Sigma Theta</option>
+            <option value="zpb">Zeta Phi Beta</option>
+            <option value="sgr">Sigma Gamma Rho</option>
+            <option value="apa">Alpha Phi Alpha</option>
+            <option value="kap">Kappa Alpha Psi</option>
+            <option value="opp">Omega Psi Phi</option>
+            <option value="pbs">Phi Beta Sigma</option>
+            <option value="ipt">Iota Phi Theta</option>
+          </select>
+        </label>
+      </div>
 
       <div class="form-group">
-        <label
-          >Body Color:
-          <input type="color" id="body-color" value="#FF0000" />
+        <label>
+          Body Color:
+          <select id="body-color"></select>
         </label>
       </div>
+
       <div class="form-group">
-        <label
-          >Sleeves Color:
-          <input type="color" id="sleeves-color" value="#FFFFFF" />
+        <label>
+          Sleeves Color:
+          <select id="sleeves-color"></select>
         </label>
       </div>
+
       <div class="form-group">
-        <label
-          >Collar Color:
-          <input type="color" id="collar-color" value="#000000" />
+        <label>
+          Collar Color:
+          <select id="collar-color"></select>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          Cuffs Color:
+          <select id="cuffs-color"></select>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          Lines Color:
+          <select id="lines-color"></select>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          Buttons Color:
+          <select id="buttons-color"></select>
         </label>
       </div>
 
@@ -302,31 +342,86 @@
       }
     }
 
-    async function loadColors() {
-      try {
-        const snapshot = await db
-          .collection('apparel')
-          .doc('varsity_jacket')
-          .collection('colors')
-          .get();
-        colorPicker.innerHTML = '';
+    async function loadTemplates() {
+      const snapshot = await getDocs(collection(db, 'templates'));
+      const picker = document.getElementById('template-picker');
 
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const option = document.createElement('option');
-          option.value = JSON.stringify({
-            imageUrl: data.imageUrls.front,
-            name: data.name,
-            price: data.price,
-          });
-          option.textContent = `${data.name} ($${data.price})`;
-          colorPicker.appendChild(option);
+      snapshot.forEach(doc => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify(doc.data());
+        option.textContent = doc.data().name;
+        picker.appendChild(option);
+      });
+
+      picker.addEventListener('change', e => {
+        const data = JSON.parse(e.target.value);
+        ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
+          document.getElementById(`${zone}-color`).value = data[zone];
         });
+        applyZoneColors();
+      });
+    }
+async function loadColors(org = 'all') {
+  const colorsRef = firebase.firestore().collection('apparel/varsity_jacket/colors');
+  const query = org === 'all' ? colorsRef : colorsRef.where('tags', 'array-contains', org);
 
-        updatePreview();
-      } catch (error) {
-        console.error('[🔥 Firebase Error - loadColors]:', error);
-      }
+  const snapshot = await query.get();
+
+  const zones = ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'];
+  const colorOptions = {};
+
+  zones.forEach(zone => {
+    const select = document.getElementById(`${zone}-color`);
+    select.innerHTML = '';
+    colorOptions[zone] = [];
+
+    // ✅ Add listener if not already added
+    select.addEventListener('change', applyZoneColors);
+  });
+
+  snapshot.forEach(doc => {
+    const { name, hex } = doc.data();
+    zones.forEach(zone => {
+      const select = document.getElementById(`${zone}-color`);
+      const option = document.createElement('option');
+      option.value = hex;
+      option.textContent = `${name} (${hex})`;
+      select.appendChild(option);
+      colorOptions[zone].push(hex);
+    });
+  });
+
+  // ✅ Default value + force-trigger color update
+  zones.forEach(zone => {
+    const select = document.getElementById(`${zone}-color`);
+    if (colorOptions[zone].length > 0) {
+      select.value = colorOptions[zone][0];
+      select.dispatchEvent(new Event('change'));
+    }
+  });
+
+  console.log(`[🎯 Loaded colors${org !== 'all' ? ` for org: ${org}` : ''}]`);
+}
+
+
+    async function loadTemplates() {
+      const snapshot = await getDocs(collection(db, 'templates'));
+      const picker = document.getElementById('template-picker');
+
+      snapshot.forEach(doc => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify(doc.data());
+        option.textContent = doc.data().name;
+        picker.appendChild(option);
+      });
+
+      picker.addEventListener('change', e => {
+        const data = JSON.parse(e.target.value);
+        ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
+          document.getElementById(`${zone}-color`).value = data[zone];
+        });
+        applyZoneColors();
+      });
     }
 
     function updatePreview() {
@@ -410,23 +505,49 @@
     function closeModal() {
       document.getElementById('decal-modal').style.display = 'none';
     }
+function applyZoneColors() {
+  const svg = document.querySelector('svg');
+  if (!svg) {
+    console.warn('[⛔ SVG not found in DOM]');
+    return;
+  }
 
-    function applyZoneColors() {
-      const svg = decalContainer.querySelector('svg');
-      if (!svg) return;
+  const bodyColor = document.getElementById('body-color').value;
+  const sleevesColor = document.getElementById('sleeves-color').value;
+  const cuffsColor = document.getElementById('cuffs-color').value;
+  const collarColor = document.getElementById('collar-color').value;
+  const linesColor = document.getElementById('lines-color').value;
+  const buttonsColor = document.getElementById('buttons-color').value;
 
-      const bodyColor = document.getElementById('body-color').value;
-      const sleevesColor = document.getElementById('sleeves-color').value;
-      const collarColor = document.getElementById('collar-color').value;
+  // 🧥 Body
+  svg.getElementById('front_torso')?.setAttribute('fill', bodyColor);
+  svg.getElementById('front_pockets')?.setAttribute('fill', bodyColor);
 
-      svg.getElementById('front_torso')?.setAttribute('fill', bodyColor);
-      svg.getElementById('front_right_sleeve')?.setAttribute('fill', sleevesColor);
-      svg.getElementById('front_left_sleeve')?.setAttribute('fill', sleevesColor);
-      svg.getElementById('front_collar')?.setAttribute('fill', collarColor);
-      
+  // 💪 Sleeves
+  svg.getElementById('front_left_sleeve')?.setAttribute('fill', sleevesColor);
+  svg.getElementById('front_right_sleeve')?.setAttribute('fill', sleevesColor);
 
-      console.log('[🎨 Zone Colors Applied]', { bodyColor, sleevesColor, collarColor });
-    }
+  // 👊 Cuffs
+  svg.getElementById('front_left_cuff')?.setAttribute('fill', cuffsColor);
+  svg.getElementById('front_right_cuff')?.setAttribute('fill', cuffsColor);
+  svg.getElementById('front_bottom')?.setAttribute('fill', cuffsColor);
+
+  // 🧣 Collar
+  svg.getElementById('front_collar')?.setAttribute('fill', collarColor);
+
+  // ✨ Lines
+  svg.getElementById('front_left_sleeve_lines')?.setAttribute('fill', linesColor);
+  svg.getElementById('front_right_sleeve_lines')?.setAttribute('fill', linesColor);
+  svg.getElementById('front_collar_lines')?.setAttribute('fill', linesColor);
+
+  // 🔘 Buttons
+  svg.getElementById('button_group')?.setAttribute('fill', buttonsColor);
+
+  console.log('[🎨 Zone colors applied]');
+  console.log('[🧪 SVG Elements]', [...document.querySelectorAll('svg *')].map(e => e.id).filter(Boolean));
+
+}
+
 
     async function renderCategoryTabs() {
       const tabContainer = document.getElementById('decal-tabs');
@@ -475,10 +596,20 @@
 
       console.log('[🧩 Decal categories rendered as dropdowns]');
     }
-    
-    ['body', 'sleeves', 'collar'].forEach(zone => {
-  document.getElementById(`${zone}-color`).addEventListener('input', applyZoneColors);
-});
+
+    document.getElementById('org-filter').addEventListener('change', e => {
+      const org = e.target.value;
+      loadColors(org);
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadColors();
+      await loadTemplates();
+      ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'].forEach(zone => {
+        document.getElementById(`${zone}-color`)?.addEventListener('change', applyZoneColors);
+      });
+    });
+
     // GO TIME
     await fetchJacketViews();
     await loadColors();
