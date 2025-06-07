@@ -241,6 +241,16 @@
         <!-- LEFT: Options + Buttons -->
         <div class="option-panel">
           <div class="form-group">
+            <label>
+              Apparel Type:
+              <select id="apparel-type-picker">
+                <option value="varsity_jacket">Varsity Jacket</option>
+                <option value="line_jacket">Line Jacket</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-group">
             <label
               >Choose Color:
               <select id="color-picker" onchange="updatePreview()">
@@ -402,23 +412,24 @@
         const previewImg = document.getElementById('preview');
         const decalContainer = document.getElementById('decal-container');
 
+        let apparelType = 'varsity_jacket';
         let jacketViews = {};
 
         async function autoFillCityState(zip) {
-        if (!zip || zip.length < 5) return;
+          if (!zip || zip.length < 5) return;
 
-        try {
-          const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
-          const data = await res.json();
+          try {
+            const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
+            const data = await res.json();
 
-          const { 'place name': city, state } = data.places[0];
-          document.getElementById('customer-city').value = city;
-          document.getElementById('customer-state').value = state;
-          console.log(`[📍 Auto-filled]: ${city}, ${state}`);
-        } catch (err) {
-          console.warn(`[🚫 ZIP lookup failed for: ${zip}]`, err);
+            const { 'place name': city, state } = data.places[0];
+            document.getElementById('customer-city').value = city;
+            document.getElementById('customer-state').value = state;
+            console.log(`[📍 Auto-filled]: ${city}, ${state}`);
+          } catch (err) {
+            console.warn(`[🚫 ZIP lookup failed for: ${zip}]`, err);
+          }
         }
-      }
 
         async function fetchJacketViews() {
           try {
@@ -445,21 +456,41 @@
           }
         }
 
+async function switchApparel(apparelType) {
+  console.log(`[🔄 Switching apparel to]: ${apparelType}`);
+  const db = firebase.firestore();
+  const docRef = db.collection('apparel').doc(apparelType);
+
+const doc = await docRef.get();
+const data = doc.data();
+const viewKey = apparelType === 'line_jacket' ? 'lineJacketViews' : 'jacketViews';
+
+if (!data || !data[viewKey]) return alert('No jacket views found.');
+jacketViews = data[viewKey];
+  if (!jacketViews || Object.keys(jacketViews).length === 0) {
+    return alert('No jacket views available for this apparel type.');
+  }
+  await loadJacketView('front');
+
+  await loadColors(apparelType);
+  await loadTemplates(apparelType);
+  await renderCategoryTabs(apparelType);
+}
+
         async function loadTemplates() {
           try {
             const picker = document.getElementById('template-picker');
-            picker.innerHTML = `<option selected disabled>Pick a template...</option>`; // reset
+            picker.innerHTML = `<option selected disabled>Pick a template...</option>`;
 
             const snapshot = await firebase
               .firestore()
               .collection('apparel')
-              .doc('varsity_jacket')
+              .doc(apparelType)
               .collection('templates')
               .get();
 
             snapshot.forEach(doc => {
               const data = doc.data();
-              console.log('[📁 Template Loaded]', data); // double confirm
               const option = document.createElement('option');
               option.value = JSON.stringify(data);
               option.textContent = data.name || doc.id;
@@ -472,7 +503,7 @@
                 const select = document.getElementById(`${zone}-color`);
                 if (select && data[zone]) {
                   select.value = data[zone];
-                  select.dispatchEvent(new Event('change')); // auto apply
+                  select.dispatchEvent(new Event('change'));
                 }
               });
               applyZoneColors();
@@ -484,48 +515,68 @@
           }
         }
 
-        async function loadColors(org = 'all') {
-          const colorsRef = firebase.firestore().collection('apparel/varsity_jacket/colors');
-          const query = org === 'all' ? colorsRef : colorsRef.where('tags', 'array-contains', org);
+       async function loadColors(org = 'all') {
+  try {
+    const colorsRef = firebase
+      .firestore()
+      .collection('apparel')
+      .doc(apparelType)
+      .collection('colors');
 
-          const snapshot = await query.get();
+    const query = org === 'all'
+      ? colorsRef
+      : colorsRef.where('tags', 'array-contains', org);
 
-          const zones = ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'];
-          const colorOptions = {};
+    const snapshot = await query.get();
+    if (snapshot.empty) {
+      console.warn(`[⚠️ No colors found] for ${apparelType} with org "${org}"`);
+      return;
+    }
 
-          zones.forEach(zone => {
-            const select = document.getElementById(`${zone}-color`);
-            select.innerHTML = '';
-            colorOptions[zone] = [];
+    const zones = ['body', 'sleeves', 'cuffs', 'collar', 'lines', 'buttons'];
 
-            // ✅ Add listener if not already added
-            select.addEventListener('change', applyZoneColors);
-          });
+    zones.forEach(zone => {
+      const select = document.getElementById(`${zone}-color`);
+      if (select) {
+        select.innerHTML = ''; // 💥 Wipe old options
+        const defaultOption = document.createElement('option');
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = `Select ${zone}`;
+        select.appendChild(defaultOption);
+      }
+    });
 
-          snapshot.forEach(doc => {
-            const { name, hex } = doc.data();
-            zones.forEach(zone => {
-              const select = document.getElementById(`${zone}-color`);
-              const option = document.createElement('option');
-              option.value = hex;
-              option.textContent = `${name} (${hex})`;
-              select.appendChild(option);
-              colorOptions[zone].push(hex);
-            });
-          });
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const { name, hex } = data;
 
-          // ✅ Default value + force-trigger color update
-          zones.forEach(zone => {
-            const select = document.getElementById(`${zone}-color`);
-            if (colorOptions[zone].length > 0) {
-              select.value = colorOptions[zone][0];
-              select.dispatchEvent(new Event('change'));
-            }
-          });
-
-          console.log(`[🎯 Loaded colors${org !== 'all' ? ` for org: ${org}` : ''}]`);
+      zones.forEach(zone => {
+        const select = document.getElementById(`${zone}-color`);
+        if (select) {
+          const option = document.createElement('option');
+          option.value = hex;
+          option.textContent = `${name} (${hex})`;
+          select.appendChild(option);
         }
+      });
+    });
 
+    // Auto-select the first real option
+    zones.forEach(zone => {
+      const select = document.getElementById(`${zone}-color`);
+      if (select && select.options.length > 1) {
+        select.selectedIndex = 1;
+        select.dispatchEvent(new Event('change'));
+      }
+    });
+
+    console.log(`[🎨 Colors loaded] from "${apparelType}" org: ${org}`);
+  } catch (err) {
+    console.error('[❌ loadColors() failed]', err);
+  }
+}
+        
         function updatePreview() {
           try {
             const selectedColor = JSON.parse(colorPicker.value);
@@ -692,7 +743,13 @@
           const tabContainer = document.getElementById('decal-tabs');
           tabContainer.innerHTML = '';
 
-          const snapshot = await db.collection('decals').get();
+          const snapshot = await firebase
+            .firestore()
+            .collection('apparel')
+            .doc(apparelType)
+            .collection('decals')
+            .get();
+
           const decalsByCategory = {};
 
           snapshot.forEach(doc => {
@@ -733,7 +790,7 @@
             tabContainer.appendChild(wrapper);
           });
 
-          console.log('[🧩 Decal categories rendered as dropdowns]');
+          console.log('[🧩 Decal categories rendered]');
         }
 
         window.submitDesign = async function submitDesign() {
@@ -794,24 +851,25 @@ Notes: ${notes}
               screenshot_url: imageUrl,
             };
 
-await firebase.firestore().collection('submissions').add({
-  customerName: name,
-  email,
-  phone,
-  designTitle,
-  notes,
-  summary: summaryText,
-  imageUrl,
-  estimatedPrice: 125,
-  status: "pending", 
-  timestamp: new Date(),
-  checkout_link: "https://c773717c-c485-4916-950e-98caea992f53.mysimplestore.com/checkout"
-});
+            await firebase.firestore().collection('submissions').add({
+              customerName: name,
+              email,
+              phone,
+              designTitle,
+              notes,
+              summary: summaryText,
+              imageUrl,
+              estimatedPrice: 125,
+              status: 'pending',
+              timestamp: new Date(),
+              checkout_link:
+                'https://c773717c-c485-4916-950e-98caea992f53.mysimplestore.com/checkout',
+            });
 
-if (!name || !email || !designTitle) {
-  alert("Please fill out all required fields.");
-  return;
-}
+            if (!name || !email || !designTitle) {
+              alert('Please fill out all required fields.');
+              return;
+            }
             emailjs
               .send('service_biww84y', 'template_2o3e8hl', templateParams)
               .then(res => {
@@ -844,88 +902,105 @@ if (!name || !email || !designTitle) {
           document.getElementById(`${zone}-color`).addEventListener('change', applyZoneColors);
         });
 
+        document.getElementById('apparel-type-picker').addEventListener('change', async e => {
+  apparelType = e.target.value;
+  await switchApparel(apparelType);
+});
+
         console.log('[✅ All event listeners attached]');
       };
 
-      document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
-    const panel = document.getElementById('admin-panel');
-    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-  }
-});
-
+      document.addEventListener('keydown', e => {
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+          const panel = document.getElementById('admin-panel');
+          panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+      });
 
       async function copyColorsAdmin() {
-  const db = firebase.firestore();
-  const from = document.getElementById('source-collection').value;
-  const to = document.getElementById('target-collection').value;
-  const tag = document.getElementById('tag-filter').value.trim().toLowerCase();
+        const db = firebase.firestore();
+        const from = document.getElementById('source-collection').value;
+        const to = document.getElementById('target-collection').value;
+        const tag = document.getElementById('tag-filter').value.trim().toLowerCase();
 
-  if (from === to) {
-    alert("Source and destination collections must be different.");
-    return;
-  }
+        if (from === to) {
+          alert('Source and destination collections must be different.');
+          return;
+        }
 
-  const sourceRef = db.collection('apparel').doc(from).collection('colors');
-  const targetRef = db.collection('apparel').doc(to).collection('colors');
+        const sourceRef = db.collection('apparel').doc(from).collection('colors');
+        const targetRef = db.collection('apparel').doc(to).collection('colors');
 
-  try {
-    const snapshot = await sourceRef.get();
-    const batch = db.batch();
-    let count = 0;
+        try {
+          const snapshot = await sourceRef.get();
+          const batch = db.batch();
+          let count = 0;
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const tags = (data.tags || []).map(t => t.toLowerCase());
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const tags = (data.tags || []).map(t => t.toLowerCase());
 
-      if (!tag || tags.includes(tag)) {
-        const targetDoc = targetRef.doc(doc.id);
-        batch.set(targetDoc, data);
-        count++;
+            if (!tag || tags.includes(tag)) {
+              const targetDoc = targetRef.doc(doc.id);
+              batch.set(targetDoc, data);
+              count++;
+            }
+          });
+
+          if (count === 0) {
+            alert(`No matching colors found with tag "${tag}"`);
+            return;
+          }
+
+          await batch.commit();
+          alert(`✅ Copied ${count} color(s) from ${from} ➡️ ${to}`);
+          console.log(`[🔥 COPY COMPLETE]: ${count} colors copied`);
+        } catch (err) {
+          console.error('[🚫 Admin Copy Failed]', err);
+          alert('Copy failed. Check the console.');
+        }
       }
-    });
 
-    if (count === 0) {
-      alert(`No matching colors found with tag "${tag}"`);
-      return;
-    }
 
-    await batch.commit();
-    alert(`✅ Copied ${count} color(s) from ${from} ➡️ ${to}`);
-    console.log(`[🔥 COPY COMPLETE]: ${count} colors copied`);
-  } catch (err) {
-    console.error('[🚫 Admin Copy Failed]', err);
-    alert('Copy failed. Check the console.');
-  }
-}
 
     </script>
 
     <!-- 🔐 FIREBASE ADMIN TOOL (HIDDEN PANEL) -->
-<div id="admin-panel" style="margin-top: 2rem; padding: 1rem; background: #f4f4f4; border: 1px solid #ccc;">
-  <h3>🛠 Admin Copy Tool</h3>
-  <label>
-    From:
-    <select id="source-collection">
-      <option value="varsity_jacket">varsity_jacket</option>
-      <option value="line_jacket">line_jacket</option>
-    </select>
-  </label>
-  <label style="margin-left: 1rem;">
-    To:
-    <select id="target-collection">
-      <option value="line_jacket">line_jacket</option>
-      <option value="varsity_jacket">varsity_jacket</option>
-    </select>
-  </label>
-  <label style="margin-left: 1rem;">
-    Tag Filter (optional):
-    <input type="text" id="tag-filter" placeholder="e.g. aka or dst" />
-  </label>
-  <button onclick="copyColorsAdmin()" style="margin-left: 1rem; background: darkgreen; color: white; padding: 0.5rem 1rem; border: none;">
-    Copy Colors ➡️
-  </button>
-</div>
-
+    <div
+      id="admin-panel"
+      style="margin-top: 2rem; padding: 1rem; background: #f4f4f4; border: 1px solid #ccc"
+    >
+      <h3>🛠 Admin Copy Tool</h3>
+      <label>
+        From:
+        <select id="source-collection">
+          <option value="varsity_jacket">varsity_jacket</option>
+          <option value="line_jacket">line_jacket</option>
+        </select>
+      </label>
+      <label style="margin-left: 1rem">
+        To:
+        <select id="target-collection">
+          <option value="line_jacket">line_jacket</option>
+          <option value="varsity_jacket">varsity_jacket</option>
+        </select>
+      </label>
+      <label style="margin-left: 1rem">
+        Tag Filter (optional):
+        <input type="text" id="tag-filter" placeholder="e.g. aka or dst" />
+      </label>
+      <button
+        onclick="copyColorsAdmin()"
+        style="
+          margin-left: 1rem;
+          background: darkgreen;
+          color: white;
+          padding: 0.5rem 1rem;
+          border: none;
+        "
+      >
+        Copy Colors ➡️
+      </button>
+    </div>
   </body>
 </html>
