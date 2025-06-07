@@ -336,6 +336,21 @@
             </label>
           </div>
 
+          <div class="form-group">
+            <label>
+              Contact Information:
+              <input type="text" id="customer-name" placeholder="Your Name" required />
+              <input type="email" id="customer-email" placeholder="Your Email" required />
+              <input type="tel" id="customer-phone" placeholder="Phone Number" />
+              <input type="text" id="design-title" placeholder="Design Title" />
+              <input type="address" id="customer-address" placeholder="Shipping Address" />
+              <input type="text" id="customer-city" placeholder="City" />
+              <input type="text" id="customer-state" placeholder="State/Province" />
+              <input type="text" id="customer-zip" placeholder="Zip/Postal Code" />
+              <textarea id="customer-notes" placeholder="Additional Notes..."></textarea>
+            </label>
+          </div>
+
           <div class="button-group">
             <button onclick="alert('Saving not implemented yet')" class="save-button">
               Save Design
@@ -388,6 +403,22 @@
         const decalContainer = document.getElementById('decal-container');
 
         let jacketViews = {};
+
+        async function autoFillCityState(zip) {
+        if (!zip || zip.length < 5) return;
+
+        try {
+          const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
+          const data = await res.json();
+
+          const { 'place name': city, state } = data.places[0];
+          document.getElementById('customer-city').value = city;
+          document.getElementById('customer-state').value = state;
+          console.log(`[📍 Auto-filled]: ${city}, ${state}`);
+        } catch (err) {
+          console.warn(`[🚫 ZIP lookup failed for: ${zip}]`, err);
+        }
+      }
 
         async function fetchJacketViews() {
           try {
@@ -716,7 +747,7 @@ Cuffs Color: ${document.getElementById('cuffs-color').value}
 Collar Color: ${document.getElementById('collar-color').value}
 Lines Color: ${document.getElementById('lines-color').value}
 Buttons Color: ${document.getElementById('buttons-color').value}
-Notes: Add customer input here
+Notes: ${notes}
   `.trim();
 
           try {
@@ -747,13 +778,40 @@ Notes: Add customer input here
 
             const imageUrl = data.secure_url;
 
+            const name = document.getElementById('customer-name').value;
+            const email = document.getElementById('customer-email').value;
+            const phone = document.getElementById('customer-phone').value;
+            const designTitle = document.getElementById('design-title').value || 'Untitled';
+            const notes = document.getElementById('customer-notes').value;
+
             const templateParams = {
-              to_email: 'dlafferty251@gmail.com',
-              summary: summaryText,
+              to_email: email,
+              customer_name: name,
+              customer_phone: phone,
+              design_title: designTitle,
+              summary: summaryText + `\nNotes: ${notes}`,
               price: '$125.00',
               screenshot_url: imageUrl,
             };
 
+await firebase.firestore().collection('submissions').add({
+  customerName: name,
+  email,
+  phone,
+  designTitle,
+  notes,
+  summary: summaryText,
+  imageUrl,
+  estimatedPrice: 125,
+  status: "pending", 
+  timestamp: new Date(),
+  checkout_link: "https://c773717c-c485-4916-950e-98caea992f53.mysimplestore.com/checkout"
+});
+
+if (!name || !email || !designTitle) {
+  alert("Please fill out all required fields.");
+  return;
+}
             emailjs
               .send('service_biww84y', 'template_2o3e8hl', templateParams)
               .then(res => {
@@ -788,6 +846,86 @@ Notes: Add customer input here
 
         console.log('[✅ All event listeners attached]');
       };
+
+      document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+    const panel = document.getElementById('admin-panel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  }
+});
+
+
+      async function copyColorsAdmin() {
+  const db = firebase.firestore();
+  const from = document.getElementById('source-collection').value;
+  const to = document.getElementById('target-collection').value;
+  const tag = document.getElementById('tag-filter').value.trim().toLowerCase();
+
+  if (from === to) {
+    alert("Source and destination collections must be different.");
+    return;
+  }
+
+  const sourceRef = db.collection('apparel').doc(from).collection('colors');
+  const targetRef = db.collection('apparel').doc(to).collection('colors');
+
+  try {
+    const snapshot = await sourceRef.get();
+    const batch = db.batch();
+    let count = 0;
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const tags = (data.tags || []).map(t => t.toLowerCase());
+
+      if (!tag || tags.includes(tag)) {
+        const targetDoc = targetRef.doc(doc.id);
+        batch.set(targetDoc, data);
+        count++;
+      }
+    });
+
+    if (count === 0) {
+      alert(`No matching colors found with tag "${tag}"`);
+      return;
+    }
+
+    await batch.commit();
+    alert(`✅ Copied ${count} color(s) from ${from} ➡️ ${to}`);
+    console.log(`[🔥 COPY COMPLETE]: ${count} colors copied`);
+  } catch (err) {
+    console.error('[🚫 Admin Copy Failed]', err);
+    alert('Copy failed. Check the console.');
+  }
+}
+
     </script>
+
+    <!-- 🔐 FIREBASE ADMIN TOOL (HIDDEN PANEL) -->
+<div id="admin-panel" style="margin-top: 2rem; padding: 1rem; background: #f4f4f4; border: 1px solid #ccc;">
+  <h3>🛠 Admin Copy Tool</h3>
+  <label>
+    From:
+    <select id="source-collection">
+      <option value="varsity_jacket">varsity_jacket</option>
+      <option value="line_jacket">line_jacket</option>
+    </select>
+  </label>
+  <label style="margin-left: 1rem;">
+    To:
+    <select id="target-collection">
+      <option value="line_jacket">line_jacket</option>
+      <option value="varsity_jacket">varsity_jacket</option>
+    </select>
+  </label>
+  <label style="margin-left: 1rem;">
+    Tag Filter (optional):
+    <input type="text" id="tag-filter" placeholder="e.g. aka or dst" />
+  </label>
+  <button onclick="copyColorsAdmin()" style="margin-left: 1rem; background: darkgreen; color: white; padding: 0.5rem 1rem; border: none;">
+    Copy Colors ➡️
+  </button>
+</div>
+
   </body>
 </html>
