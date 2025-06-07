@@ -7,9 +7,7 @@ describe('Landing Page Navigation', () => {
     cy.log('✅ Landed on homepage');
 
     // ✅ Find the nav button
-    cy.contains('Design Yours')
-      .should('exist')
-      .click();
+    cy.contains('Design Yours').should('exist').click();
 
     // ✅ Assert we're on the editor page (adjust path if needed)
     cy.url().should('include', '/customizer');

@@ -10,6 +10,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@react-three/drei": "^10.0.8",
     "@react-three/fiber": "^9.1.2",
     "@stripe/react-stripe-js": "^3.7.0",

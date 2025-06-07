@@ -46,7 +46,7 @@ export default function ColorPicker({ onColorChange }: ColorPickerProps) {
     <div style={{ padding: '1rem', color: 'white' }} data-testid="color-picker">
       <label>Preset Colors:</label>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
-        {presetColors.map((c) => (
+        {presetColors.map(c => (
           <button
             key={c.id}
             title={c.name}
@@ -69,7 +69,7 @@ export default function ColorPicker({ onColorChange }: ColorPickerProps) {
         id="custom-color"
         type="color"
         value={customColor}
-        onChange={(e) => handleColorChange(e.target.value)}
+        onChange={e => handleColorChange(e.target.value)}
         data-testid="custom-color"
         style={{
           width: '100%',

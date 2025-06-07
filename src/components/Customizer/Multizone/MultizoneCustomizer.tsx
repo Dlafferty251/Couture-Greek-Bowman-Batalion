@@ -41,9 +41,7 @@ export default function MultizoneCustomizer({ view }: MultizoneCustomizerProps) 
   }, []);
 
   const handleColorChange = (color: string) => {
-    setZones(prev =>
-      prev.map(z => (z.id === selectedZone ? { ...z, color } : z))
-    );
+    setZones(prev => prev.map(z => (z.id === selectedZone ? { ...z, color } : z)));
   };
 
   return (

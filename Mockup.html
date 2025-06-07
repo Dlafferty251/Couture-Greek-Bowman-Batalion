@@ -1,967 +1,1164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Couture Greek Custom Apparel Platform - Wireframes</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background: #2c3e50;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .wireframe-nav {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      .nav-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover,
+      .nav-btn.active {
+        background: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .wireframe {
+        display: none;
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+
+      .wireframe.active {
+        display: block;
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            background: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .header {
-            background: #2c3e50;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .wireframe-nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .nav-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-btn:hover, .nav-btn.active {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-        
-        .wireframe {
-            display: none;
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        
-        .wireframe.active {
-            display: block;
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .wireframe h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #e74c3c;
-        }
-        
-        .layout {
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            position: relative;
-        }
-        
-        .layout-label {
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: white;
-            padding: 0 10px;
-            font-weight: bold;
-            color: #e74c3c;
-            font-size: 14px;
-        }
-        
-        .header-section {
-            background: #f8f9fa;
-            border: 1px dashed #ccc;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            text-align: center;
-        }
-        
-        .nav-section {
-            background: #e9ecef;
-            border: 1px dashed #ccc;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
-        .content-grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
-        .content-box {
-            background: #f8f9fa;
-            border: 1px dashed #ccc;
-            padding: 15px;
-            border-radius: 6px;
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        
-        .sidebar {
-            background: #e9ecef;
-            border: 1px dashed #ccc;
-            padding: 15px;
-            border-radius: 6px;
-            min-height: 300px;
-        }
-        
-        .main-content {
-            background: #f8f9fa;
-            border: 1px dashed #ccc;
-            padding: 20px;
-            border-radius: 6px;
-            min-height: 400px;
-        }
-        
-        .design-canvas {
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px 0;
-            position: relative;
-        }
-        
-        .tshirt-outline {
-            width: 200px;
-            height: 250px;
-            background: #f0f0f0;
-            border: 2px dashed #ccc;
-            border-radius: 20px 20px 5px 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .tshirt-outline::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 20px;
-            background: #f0f0f0;
-            border: 2px dashed #ccc;
-            border-radius: 10px 10px 0 0;
-        }
-        
-        .design-tools {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .tool-btn {
-            background: #ecf0f1;
-            border: 1px solid #bdc3c7;
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .tool-btn:hover {
-            background: #d5dbdb;
-            transform: translateY(-1px);
-        }
-        
-        .pricing-section {
-            background: #e8f5e8;
-            border: 2px solid #27ae60;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
+      }
+
+      .wireframe h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #e74c3c;
+      }
+
+      .layout {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        position: relative;
+      }
+
+      .layout-label {
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background: white;
+        padding: 0 10px;
+        font-weight: bold;
+        color: #e74c3c;
+        font-size: 14px;
+      }
+
+      .header-section {
+        background: #f8f9fa;
+        border: 1px dashed #ccc;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        text-align: center;
+      }
+
+      .nav-section {
+        background: #e9ecef;
+        border: 1px dashed #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .content-grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .content-box {
+        background: #f8f9fa;
+        border: 1px dashed #ccc;
+        padding: 15px;
+        border-radius: 6px;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .sidebar {
+        background: #e9ecef;
+        border: 1px dashed #ccc;
+        padding: 15px;
+        border-radius: 6px;
+        min-height: 300px;
+      }
+
+      .main-content {
+        background: #f8f9fa;
+        border: 1px dashed #ccc;
+        padding: 20px;
+        border-radius: 6px;
+        min-height: 400px;
+      }
+
+      .design-canvas {
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+        position: relative;
+      }
+
+      .tshirt-outline {
+        width: 200px;
+        height: 250px;
+        background: #f0f0f0;
+        border: 2px dashed #ccc;
+        border-radius: 20px 20px 5px 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .tshirt-outline::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 20px;
+        background: #f0f0f0;
+        border: 2px dashed #ccc;
+        border-radius: 10px 10px 0 0;
+      }
+
+      .design-tools {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        margin: 15px 0;
+      }
+
+      .tool-btn {
+        background: #ecf0f1;
+        border: 1px solid #bdc3c7;
+        padding: 10px;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .tool-btn:hover {
+        background: #d5dbdb;
+        transform: translateY(-1px);
+      }
+
+      .pricing-section {
+        background: #e8f5e8;
+        border: 2px solid #27ae60;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .checkout-flow {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .checkout-step {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        position: relative;
+      }
+
+      .checkout-step::after {
+        content: '→';
+        position: absolute;
+        right: -25px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 24px;
+        color: #ffc107;
+      }
+
+      .checkout-step:last-child::after {
+        display: none;
+      }
+
+      .mobile-view {
+        max-width: 375px;
+        margin: 0 auto;
+        border: 3px solid #333;
+        border-radius: 25px;
+        padding: 20px;
+        background: white;
+      }
+
+      .form-field {
+        background: #f8f9fa;
+        border: 1px dashed #ccc;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+
+      .cta-button {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        margin: 10px 0;
+      }
+
+      .integration-note {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-radius: 6px;
+        padding: 15px;
+        margin: 20px 0;
+        color: #0c5460;
+      }
+
+      .annotation {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 10px 15px;
+        margin: 10px 0;
+        font-size: 14px;
+        color: #856404;
+      }
+
+      @media (max-width: 768px) {
+        .content-grid,
+        .content-grid-3,
         .checkout-flow {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
+          grid-template-columns: 1fr;
         }
-        
-        .checkout-step {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            position: relative;
+
+        .wireframe-nav {
+          flex-direction: column;
+          align-items: center;
         }
-        
-        .checkout-step::after {
-            content: '→';
-            position: absolute;
-            right: -25px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
-            color: #ffc107;
+
+        .nav-btn {
+          width: 200px;
         }
-        
-        .checkout-step:last-child::after {
-            display: none;
-        }
-        
-        .mobile-view {
-            max-width: 375px;
-            margin: 0 auto;
-            border: 3px solid #333;
-            border-radius: 25px;
-            padding: 20px;
-            background: white;
-        }
-        
-        .form-field {
-            background: #f8f9fa;
-            border: 1px dashed #ccc;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
-        }
-        
-        .cta-button {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            margin: 10px 0;
-        }
-        
-        .integration-note {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-radius: 6px;
-            padding: 15px;
-            margin: 20px 0;
-            color: #0c5460;
-        }
-        
-        .annotation {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 10px 15px;
-            margin: 10px 0;
-            font-size: 14px;
-            color: #856404;
-        }
-        
-        @media (max-width: 768px) {
-            .content-grid, .content-grid-3, .checkout-flow {
-                grid-template-columns: 1fr;
-            }
-            
-            .wireframe-nav {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-btn {
-                width: 200px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="header">
-        <h1>🎨 Couture Greek Custom Apparel Platform</h1>
-        <p>UI/UX Wireframes & User Flow Design</p>
+      <h1>🎨 Couture Greek Custom Apparel Platform</h1>
+      <p>UI/UX Wireframes & User Flow Design</p>
     </div>
-    
+
     <div class="container">
-        <div class="wireframe-nav">
-            <button class="nav-btn active" onclick="showWireframe('homepage')">Homepage</button>
-            <button class="nav-btn" onclick="showWireframe('designer')">Design Studio</button>
-            <button class="nav-btn" onclick="showWireframe('pricing')">Pricing Engine</button>
-            <button class="nav-btn" onclick="showWireframe('checkout')">Checkout Flow</button>
-            <button class="nav-btn" onclick="showWireframe('mobile')">Mobile View</button>
-            <button class="nav-btn" onclick="showWireframe('integration')">Integration</button>
+      <div class="wireframe-nav">
+        <button class="nav-btn active" onclick="showWireframe('homepage')">Homepage</button>
+        <button class="nav-btn" onclick="showWireframe('designer')">Design Studio</button>
+        <button class="nav-btn" onclick="showWireframe('pricing')">Pricing Engine</button>
+        <button class="nav-btn" onclick="showWireframe('checkout')">Checkout Flow</button>
+        <button class="nav-btn" onclick="showWireframe('mobile')">Mobile View</button>
+        <button class="nav-btn" onclick="showWireframe('integration')">Integration</button>
+      </div>
+
+      <!-- Homepage Wireframe -->
+      <div class="wireframe active" id="homepage">
+        <h2>🏠 Homepage Integration</h2>
+
+        <div class="layout">
+          <div class="layout-label">Main Site Integration</div>
+
+          <div class="header-section">
+            <strong>Couture Greek Header</strong><br />
+            Logo | Navigation | Account | Cart
+          </div>
+
+          <div class="nav-section">
+            <div>Shop Categories</div>
+            <div><strong>🎨 CUSTOM DESIGNER</strong></div>
+            <div>About | Contact</div>
+          </div>
+
+          <div class="content-grid">
+            <div class="content-box">
+              <div>
+                <h3>🎨 Design Your Own</h3>
+                <p>Custom Greek Apparel</p>
+                <button class="cta-button">Start Designing</button>
+              </div>
+            </div>
+            <div class="content-box">
+              <div>
+                <h3>📦 Pre-Made Designs</h3>
+                <p>Ready-to-Order Styles</p>
+                <button
+                  style="
+                    background: #95a5a6;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 4px;
+                  "
+                >
+                  Browse Catalog
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-grid-3">
+            <div class="content-box">
+              <div>
+                <strong>👕 T-Shirts</strong><br />
+                Starting at $19.99
+              </div>
+            </div>
+            <div class="content-box">
+              <div>
+                <strong>👔 Sweatshirts</strong><br />
+                Starting at $34.99
+              </div>
+            </div>
+            <div class="content-box">
+              <div>
+                <strong>🧢 Accessories</strong><br />
+                Starting at $12.99
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <!-- Homepage Wireframe -->
-        <div class="wireframe active" id="homepage">
-            <h2>🏠 Homepage Integration</h2>
-            
-            <div class="layout">
-                <div class="layout-label">Main Site Integration</div>
-                
-                <div class="header-section">
-                    <strong>Couture Greek Header</strong><br>
-                    Logo | Navigation | Account | Cart
-                </div>
-                
-                <div class="nav-section">
-                    <div>Shop Categories</div>
-                    <div><strong>🎨 CUSTOM DESIGNER</strong></div>
-                    <div>About | Contact</div>
-                </div>
-                
-                <div class="content-grid">
-                    <div class="content-box">
-                        <div>
-                            <h3>🎨 Design Your Own</h3>
-                            <p>Custom Greek Apparel</p>
-                            <button class="cta-button">Start Designing</button>
-                        </div>
-                    </div>
-                    <div class="content-box">
-                        <div>
-                            <h3>📦 Pre-Made Designs</h3>
-                            <p>Ready-to-Order Styles</p>
-                            <button style="background: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 4px;">Browse Catalog</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="content-grid-3">
-                    <div class="content-box">
-                        <div>
-                            <strong>👕 T-Shirts</strong><br>
-                            Starting at $19.99
-                        </div>
-                    </div>
-                    <div class="content-box">
-                        <div>
-                            <strong>👔 Sweatshirts</strong><br>
-                            Starting at $34.99
-                        </div>
-                    </div>
-                    <div class="content-box">
-                        <div>
-                            <strong>🧢 Accessories</strong><br>
-                            Starting at $12.99
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="integration-note">
-                <strong>🔗 Integration Notes:</strong><br>
-                • Seamless navigation between main site and custom designer<br>
-                • Shared shopping cart and user accounts<br>
-                • Consistent branding and styling<br>
-                • Custom designer prominently featured in main navigation
-            </div>
+
+        <div class="integration-note">
+          <strong>🔗 Integration Notes:</strong><br />
+          • Seamless navigation between main site and custom designer<br />
+          • Shared shopping cart and user accounts<br />
+          • Consistent branding and styling<br />
+          • Custom designer prominently featured in main navigation
         </div>
-        
-        <!-- Design Studio Wireframe -->
-        <div class="wireframe" id="designer">
-            <h2>🎨 Design Studio Interface</h2>
-            
-            <div class="layout">
-                <div class="layout-label">Design Studio Layout</div>
-                
-                <div class="header-section">
-                    <strong>Couture Greek Design Studio</strong><br>
-                    Progress Bar: Select Product → Design → Preview → Order
+      </div>
+
+      <!-- Design Studio Wireframe -->
+      <div class="wireframe" id="designer">
+        <h2>🎨 Design Studio Interface</h2>
+
+        <div class="layout">
+          <div class="layout-label">Design Studio Layout</div>
+
+          <div class="header-section">
+            <strong>Couture Greek Design Studio</strong><br />
+            Progress Bar: Select Product → Design → Preview → Order
+          </div>
+
+          <div class="content-grid">
+            <div class="sidebar">
+              <h4>🛠️ Design Tools</h4>
+              <div class="design-tools">
+                <div class="tool-btn">📝 Text</div>
+                <div class="tool-btn">🎨 Colors</div>
+                <div class="tool-btn">📷 Upload Image</div>
+                <div class="tool-btn">⭐ Greek Letters</div>
+                <div class="tool-btn">🎭 Symbols</div>
+                <div class="tool-btn">📏 Resize</div>
+                <div class="tool-btn">🔄 Rotate</div>
+                <div class="tool-btn">📋 Templates</div>
+              </div>
+
+              <div style="margin-top: 20px">
+                <h4>📦 Product Options</h4>
+                <div class="form-field">Garment Type: T-Shirt ▼</div>
+                <div class="form-field">Size: M ▼</div>
+                <div class="form-field">Color: Navy ▼</div>
+                <div class="form-field">Quantity: 1 ▼</div>
+              </div>
+
+              <div style="margin-top: 20px">
+                <h4>💰 Live Pricing</h4>
+                <div
+                  style="background: #e8f5e8; padding: 15px; border-radius: 6px; text-align: center"
+                >
+                  <strong style="font-size: 18px; color: #27ae60">$24.99</strong><br />
+                  <small>Updates in real-time</small>
                 </div>
-                
-                <div class="content-grid">
-                    <div class="sidebar">
-                        <h4>🛠️ Design Tools</h4>
-                        <div class="design-tools">
-                            <div class="tool-btn">📝 Text</div>
-                            <div class="tool-btn">🎨 Colors</div>
-                            <div class="tool-btn">📷 Upload Image</div>
-                            <div class="tool-btn">⭐ Greek Letters</div>
-                            <div class="tool-btn">🎭 Symbols</div>
-                            <div class="tool-btn">📏 Resize</div>
-                            <div class="tool-btn">🔄 Rotate</div>
-                            <div class="tool-btn">📋 Templates</div>
-                        </div>
-                        
-                        <div style="margin-top: 20px;">
-                            <h4>📦 Product Options</h4>
-                            <div class="form-field">Garment Type: T-Shirt ▼</div>
-                            <div class="form-field">Size: M ▼</div>
-                            <div class="form-field">Color: Navy ▼</div>
-                            <div class="form-field">Quantity: 1 ▼</div>
-                        </div>
-                        
-                        <div style="margin-top: 20px;">
-                            <h4>💰 Live Pricing</h4>
-                            <div style="background: #e8f5e8; padding: 15px; border-radius: 6px; text-align: center;">
-                                <strong style="font-size: 18px; color: #27ae60;">$24.99</strong><br>
-                                <small>Updates in real-time</small>
-                            </div>
-                        </div>
+              </div>
+            </div>
+
+            <div class="main-content">
+              <h4>👕 Design Canvas</h4>
+              <div class="design-canvas">
+                <div class="tshirt-outline">
+                  <div style="text-align: center; color: #666">
+                    <div style="font-size: 20px; font-weight: bold; color: #e74c3c">ΑΚΑ</div>
+                    <div style="font-size: 12px; margin-top: 5px">SORORITY</div>
+                    <div style="font-size: 10px; margin-top: 10px; color: #999">
+                      Drag to position
                     </div>
-                    
-                    <div class="main-content">
-                        <h4>👕 Design Canvas</h4>
-                        <div class="design-canvas">
-                            <div class="tshirt-outline">
-                                <div style="text-align: center; color: #666;">
-                                    <div style="font-size: 20px; font-weight: bold; color: #e74c3c;">ΑΚΑ</div>
-                                    <div style="font-size: 12px; margin-top: 5px;">SORORITY</div>
-                                    <div style="font-size: 10px; margin-top: 10px; color: #999;">Drag to position</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                            <button style="background: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 4px;">Front View</button>
-                            <button style="background: #ecf0f1; border: 1px solid #bdc3c7; padding: 10px 20px; border-radius: 4px;">Back View</button>
-                            <button style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 4px;">3D Preview</button>
-                        </div>
-                        
-                        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                            <button style="background: #e67e22; color: white; border: none; padding: 12px 24px; border-radius: 6px;">Save Design</button>
-                            <button class="cta-button" style="width: auto; padding: 12px 24px;">Add to Cart</button>
-                        </div>
-                    </div>
+                  </div>
                 </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 20px">
+                <button
+                  style="
+                    background: #95a5a6;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 4px;
+                  "
+                >
+                  Front View
+                </button>
+                <button
+                  style="
+                    background: #ecf0f1;
+                    border: 1px solid #bdc3c7;
+                    padding: 10px 20px;
+                    border-radius: 4px;
+                  "
+                >
+                  Back View
+                </button>
+                <button
+                  style="
+                    background: #3498db;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 4px;
+                  "
+                >
+                  3D Preview
+                </button>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 20px">
+                <button
+                  style="
+                    background: #e67e22;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 6px;
+                  "
+                >
+                  Save Design
+                </button>
+                <button class="cta-button" style="width: auto; padding: 12px 24px">
+                  Add to Cart
+                </button>
+              </div>
             </div>
-            
-            <div class="annotation">
-                <strong>💡 Key Features:</strong><br>
-                • Real-time design preview with drag-and-drop functionality<br>
-                • Live pricing updates based on selections<br>
-                • Greek letter library with sorority/fraternity symbols<br>
-                • Multiple view angles (front, back, 3D preview)<br>
-                • Template library for quick starts<br>
-                • Save designs for later editing
-            </div>
+          </div>
         </div>
-        
-        <!-- Pricing Engine Wireframe -->
-        <div class="wireframe" id="pricing">
-            <h2>💰 Dynamic Pricing Engine</h2>
-            
-            <div class="layout">
-                <div class="layout-label">Pricing Logic Flow</div>
-                
-                <div class="pricing-section">
-                    <h4>📊 Pricing Factors</h4>
-                    <div class="content-grid">
-                        <div class="content-box">
-                            <div>
-                                <strong>Base Garment</strong><br>
-                                T-Shirt: $12.00<br>
-                                Sweatshirt: $22.00<br>
-                                Hoodie: $28.00
-                            </div>
-                        </div>
-                        <div class="content-box">
-                            <div>
-                                <strong>Customization</strong><br>
-                                1 Color Print: +$4.00<br>
-                                2+ Colors: +$6.00<br>
-                                Special Effects: +$8.00
-                            </div>
-                        </div>
-                        <div class="content-box">
-                            <div>
-                                <strong>Quantity Discounts</strong><br>
-                                1-5: No discount<br>
-                                6-11: 10% off<br>
-                                12+: 20% off
-                            </div>
-                        </div>
-                        <div class="content-box">
-                            <div>
-                                <strong>Rush Orders</strong><br>
-                                Standard: Free<br>
-                                7 days: +$5.00<br>
-                                3 days: +$12.00
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="content-box">
-                    <h4>🧮 Pricing Calculator Preview</h4>
-                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
-                        <div style="display: flex; justify-content: space-between; margin: 10px 0;">
-                            <span>Navy T-Shirt (Medium)</span>
-                            <span>$12.00</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin: 10px 0;">
-                            <span>2-Color Custom Print</span>
-                            <span>$6.00</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin: 10px 0;">
-                            <span>Quantity: 8 (10% discount)</span>
-                            <span>-$1.80</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin: 10px 0; border-top: 2px solid #eee; padding-top: 10px; font-weight: bold; font-size: 18px;">
-                            <span>Total per item:</span>
-                            <span style="color: #27ae60;">$16.20</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin: 10px 0; font-weight: bold; font-size: 20px; color: #e74c3c;">
-                            <span>Order Total:</span>
-                            <span>$129.60</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="annotation">
-                <strong>⚙️ Pricing Engine Features:</strong><br>
-                • Real-time calculations as users make selections<br>
-                • Transparent breakdown of all costs<br>
-                • Automatic quantity discounts applied<br>
-                • Rush order options with clear pricing<br>
-                • Special pricing for bulk orders (12+ items)<br>
-                • Integration with inventory for accurate base costs
-            </div>
+
+        <div class="annotation">
+          <strong>💡 Key Features:</strong><br />
+          • Real-time design preview with drag-and-drop functionality<br />
+          • Live pricing updates based on selections<br />
+          • Greek letter library with sorority/fraternity symbols<br />
+          • Multiple view angles (front, back, 3D preview)<br />
+          • Template library for quick starts<br />
+          • Save designs for later editing
         </div>
-        
-        <!-- Checkout Flow Wireframe -->
-        <div class="wireframe" id="checkout">
-            <h2>🛒 Checkout Process Flow</h2>
-            
-            <div class="layout">
-                <div class="layout-label">3-Step Checkout Process</div>
-                
-                <div class="checkout-flow">
-                    <div class="checkout-step">
-                        <h4>Step 1: Review Order</h4>
-                        <div style="margin: 15px 0;">
-                            <div class="content-box" style="min-height: 150px;">
-                                Design Preview<br>
-                                Quantity & Sizing<br>
-                                Pricing Breakdown<br>
-                                <button style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; margin-top: 10px;">Edit Design</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="checkout-step">
-                        <h4>Step 2: Shipping & Contact</h4>
-                        <div style="margin: 15px 0;">
-                            <div class="form-field">Full Name</div>
-                            <div class="form-field">Email Address</div>
-                            <div class="form-field">Phone Number</div>
-                            <div class="form-field">Shipping Address</div>
-                            <div class="form-field">Delivery Speed ▼</div>
-                        </div>
-                    </div>
-                    
-                    <div class="checkout-step">
-                        <h4>Step 3: Payment</h4>
-                        <div style="margin: 15px 0;">
-                            <div class="form-field">💳 Credit Card</div>
-                            <div class="form-field">📱 PayPal</div>
-                            <div class="form-field">🏦 Bank Transfer</div>
-                            <div style="margin-top: 15px;">
-                                <button class="cta-button">Complete Order</button>
-                            </div>
-                        </div>
-                    </div>
+      </div>
+
+      <!-- Pricing Engine Wireframe -->
+      <div class="wireframe" id="pricing">
+        <h2>💰 Dynamic Pricing Engine</h2>
+
+        <div class="layout">
+          <div class="layout-label">Pricing Logic Flow</div>
+
+          <div class="pricing-section">
+            <h4>📊 Pricing Factors</h4>
+            <div class="content-grid">
+              <div class="content-box">
+                <div>
+                  <strong>Base Garment</strong><br />
+                  T-Shirt: $12.00<br />
+                  Sweatshirt: $22.00<br />
+                  Hoodie: $28.00
                 </div>
-                
-                <div class="content-box">
-                    <h4>📧 Order Confirmation Process</h4>
-                    <div style="display: flex; justify-content: space-around; align-items: center; margin: 20px 0;">
-                        <div style="text-align: center;">
-                            <div style="background: #e8f5e8; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">✅</div>
-                            <strong>Order Placed</strong><br>
-                            <small>Instant confirmation</small>
-                        </div>
-                        <div style="font-size: 24px; color: #ccc;">→</div>
-                        <div style="text-align: center;">
-                            <div style="background: #fff3cd; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">🎨</div>
-                            <strong>Design Review</strong><br>
-                            <small>1-2 business days</small>
-                        </div>
-                        <div style="font-size: 24px; color: #ccc;">→</div>
-                        <div style="text-align: center;">
-                            <div style="background: #d1ecf1; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">👕</div>
-                            <strong>Production</strong><br>
-                            <small>5-7 business days</small>
-                        </div>
-                        <div style="font-size: 24px; color: #ccc;">→</div>
-                        <div style="text-align: center;">
-                            <div style="background: #f8d7da; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">📦</div>
-                            <strong>Shipped</strong><br>
-                            <small>Tracking provided</small>
-                        </div>
-                    </div>
+              </div>
+              <div class="content-box">
+                <div>
+                  <strong>Customization</strong><br />
+                  1 Color Print: +$4.00<br />
+                  2+ Colors: +$6.00<br />
+                  Special Effects: +$8.00
                 </div>
+              </div>
+              <div class="content-box">
+                <div>
+                  <strong>Quantity Discounts</strong><br />
+                  1-5: No discount<br />
+                  6-11: 10% off<br />
+                  12+: 20% off
+                </div>
+              </div>
+              <div class="content-box">
+                <div>
+                  <strong>Rush Orders</strong><br />
+                  Standard: Free<br />
+                  7 days: +$5.00<br />
+                  3 days: +$12.00
+                </div>
+              </div>
             </div>
-            
-            <div class="annotation">
-                <strong>🔒 Checkout Security Features:</strong><br>
-                • SSL encryption for all payment processing<br>
-                • Multiple payment options (Credit, PayPal, Bank transfer)<br>
-                • Guest checkout option with account creation prompt<br>
-                • Order confirmation emails with tracking<br>
-                • Clear timeline expectations for production and delivery<br>
-                • Design proof approval process for custom orders
+          </div>
+
+          <div class="content-box">
+            <h4>🧮 Pricing Calculator Preview</h4>
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0">
+              <div style="display: flex; justify-content: space-between; margin: 10px 0">
+                <span>Navy T-Shirt (Medium)</span>
+                <span>$12.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin: 10px 0">
+                <span>2-Color Custom Print</span>
+                <span>$6.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin: 10px 0">
+                <span>Quantity: 8 (10% discount)</span>
+                <span>-$1.80</span>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin: 10px 0;
+                  border-top: 2px solid #eee;
+                  padding-top: 10px;
+                  font-weight: bold;
+                  font-size: 18px;
+                "
+              >
+                <span>Total per item:</span>
+                <span style="color: #27ae60">$16.20</span>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin: 10px 0;
+                  font-weight: bold;
+                  font-size: 20px;
+                  color: #e74c3c;
+                "
+              >
+                <span>Order Total:</span>
+                <span>$129.60</span>
+              </div>
             </div>
+          </div>
         </div>
-        
-        <!-- Mobile View Wireframe -->
-        <div class="wireframe" id="mobile">
-            <h2>📱 Mobile Responsive Design</h2>
-            
-            <div class="layout">
-                <div class="layout-label">Mobile-First Approach</div>
-                
-                <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px;">
-                    <div class="mobile-view">
-                        <div style="text-align: center; margin-bottom: 20px;">
-                            <strong>📱 Mobile Homepage</strong>
-                        </div>
-                        
-                        <div class="header-section">
-                            ☰ Couture Greek 🛒
-                        </div>
-                        
-                        <div class="content-box" style="margin: 15px 0;">
-                            <div>
-                                <h3>🎨 Design Custom Apparel</h3>
-                                <button class="cta-button">Start Designing</button>
-                            </div>
-                        </div>
-                        
-                        <div class="content-box" style="margin: 15px 0;">
-                            <div>
-                                <strong>👕 Quick Options</strong><br>
-                                T-Shirts | Sweatshirts | Hoodies
-                            </div>
-                        </div>
-                        
-                        <div class="content-box" style="margin: 15px 0;">
-                            <div>
-                                <strong>⭐ Greek Letters</strong><br>
-                                Popular Sorority Designs
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mobile-view">
-                        <div style="text-align: center; margin-bottom: 20px;">
-                            <strong>🎨 Mobile Designer</strong>
-                        </div>
-                        
-                        <div class="header-section">
-                            ← Design Studio ✓
-                        </div>
-                        
-                        <div class="design-canvas" style="height: 200px; margin: 15px 0;">
-                            <div style="width: 120px; height: 150px; background: #f0f0f0; border: 2px dashed #ccc; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
-                                <div style="text-align: center; font-size: 12px;">
-                                    <div style="font-weight: bold;">ΑΚΑ</div>
-                                    <div style="font-size: 10px;">Touch to edit</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
-                            <div class="tool-btn" style="padding: 8px; font-size: 12px;">📝 Text</div>
-                            <div class="tool-btn" style="padding: 8px; font-size: 12px;">🎨 Color</div>
-                            <div class="tool-btn" style="padding: 8px; font-size: 12px;">⭐ Greek</div>
-                            <div class="tool-btn" style="padding: 8px; font-size: 12px;">💰 $24.99</div>
-                        </div>
-                        
-                        <button class="cta-button">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="annotation">
-                <strong>📱 Mobile Optimization Features:</strong><br>
-                • Touch-friendly design tools and interface<br>
-                • Simplified navigation with hamburger menu<br>
-                • Finger-friendly button sizes (minimum 44px)<br>
-                • Vertical layout optimized for scrolling<br>
-                • Swipe gestures for design canvas navigation<br>
-                • One-thumb operation for common actions<br>
-                • Fast loading with progressive image loading<br>
-                • Mobile payment integration (Apple Pay, Google Pay)<br>
-                • Camera integration for uploading custom images
-            </div>
+
+        <div class="annotation">
+          <strong>⚙️ Pricing Engine Features:</strong><br />
+          • Real-time calculations as users make selections<br />
+          • Transparent breakdown of all costs<br />
+          • Automatic quantity discounts applied<br />
+          • Rush order options with clear pricing<br />
+          • Special pricing for bulk orders (12+ items)<br />
+          • Integration with inventory for accurate base costs
         </div>
-        
-        <!-- Integration Wireframe -->
-        <div class="wireframe" id="integration">
-            <h2>🔗 Couture Greek Integration Strategy</h2>
-            
-            <div class="layout">
-                <div class="layout-label">Technical Integration Architecture</div>
-                
-                <div class="content-grid">
-                    <div class="content-box">
-                        <div>
-                            <h4>🌐 Main Website</h4>
-                            <strong>www.couturegreek.com</strong><br><br>
-                            • Existing product catalog<br>
-                            • User accounts & authentication<br>
-                            • Shopping cart system<br>
-                            • Order management<br>
-                            • Brand identity & styling
-                        </div>
-                    </div>
-                    <div class="content-box">
-                        <div>
-                            <h4>🎨 Custom Designer</h4>
-                            <strong>Subdomain/Path Integration</strong><br><br>
-                            • design.couturegreek.com<br>
-                            • OR /custom-designer/<br>
-                            • Seamless SSO integration<br>
-                            • Shared cart functionality<br>
-                            • Unified checkout process
-                        </div>
-                    </div>
+      </div>
+
+      <!-- Checkout Flow Wireframe -->
+      <div class="wireframe" id="checkout">
+        <h2>🛒 Checkout Process Flow</h2>
+
+        <div class="layout">
+          <div class="layout-label">3-Step Checkout Process</div>
+
+          <div class="checkout-flow">
+            <div class="checkout-step">
+              <h4>Step 1: Review Order</h4>
+              <div style="margin: 15px 0">
+                <div class="content-box" style="min-height: 150px">
+                  Design Preview<br />
+                  Quantity & Sizing<br />
+                  Pricing Breakdown<br />
+                  <button
+                    style="
+                      background: #3498db;
+                      color: white;
+                      border: none;
+                      padding: 8px 16px;
+                      border-radius: 4px;
+                      margin-top: 10px;
+                    "
+                  >
+                    Edit Design
+                  </button>
                 </div>
-                
-                <div class="integration-note">
-                    <h4>🔧 Technical Requirements</h4>
-                    <div class="content-grid-3">
-                        <div class="content-box">
-                            <div>
-                                <strong>🔐 Authentication</strong><br>
-                                • Single Sign-On (SSO)<br>
-                                • Shared user sessions<br>
-                                • Guest design capability<br>
-                                • Account creation prompts
-                            </div>
-                        </div>
-                        <div class="content-box">
-                            <div>
-                                <strong>🛒 E-commerce</strong><br>
-                                • Unified shopping cart<br>
-                                • Inventory management<br>
-                                • Order processing<br>
-                                • Payment gateway integration
-                            </div>
-                        </div>
-                        <div class="content-box">
-                            <div>
-                                <strong>🎨 Design Engine</strong><br>
-                                • Canvas-based editor<br>
-                                • Real-time preview<br>
-                                • Asset management<br>
-                                • Export capabilities
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="content-box">
-                    <h4>📊 Data Flow Architecture</h4>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0; flex-wrap: wrap; gap: 20px;">
-                        <div style="text-align: center; flex: 1; min-width: 150px;">
-                            <div style="background: #e8f5e8; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
-                                <strong>👤 User</strong><br>
-                                Creates Design
-                            </div>
-                        </div>
-                        <div style="font-size: 24px; color: #ccc;">→</div>
-                        <div style="text-align: center; flex: 1; min-width: 150px;">
-                            <div style="background: #fff3cd; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
-                                <strong>🎨 Design API</strong><br>
-                                Processes & Saves
-                            </div>
-                        </div>
-                        <div style="font-size: 24px; color: #ccc;">→</div>
-                        <div style="text-align: center; flex: 1; min-width: 150px;">
-                            <div style="background: #d1ecf1; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
-                                <strong>💰 Pricing Engine</strong><br>
-                                Calculates Cost
-                            </div>
-                        </div>
-                        <div style="font-size: 24px; color: #ccc;">→</div>
-                        <div style="text-align: center; flex: 1; min-width: 150px;">
-                            <div style="background: #f8d7da; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
-                                <strong>🛒 Main Site</strong><br>
-                                Cart & Checkout
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="pricing-section">
-                    <h4>🚀 Implementation Phases</h4>
-                    <div class="checkout-flow">
-                        <div class="checkout-step">
-                            <h4>Phase 1: Foundation</h4>
-                            <div style="text-align: left; margin-top: 15px;">
-                                • Basic design canvas<br>
-                                • Product selection<br>
-                                • Simple text/logo tools<br>
-                                • Basic pricing engine<br>
-                                • Cart integration
-                            </div>
-                        </div>
-                        
-                        <div class="checkout-step">
-                            <h4>Phase 2: Enhancement</h4>
-                            <div style="text-align: left; margin-top: 15px;">
-                                • Advanced design tools<br>
-                                • Greek letter library<br>
-                                • Template system<br>
-                                • 3D preview<br>
-                                • Mobile optimization
-                            </div>
-                        </div>
-                        
-                        <div class="checkout-step">
-                            <h4>Phase 3: Advanced</h4>
-                            <div style="text-align: left; margin-top: 15px;">
-                                • AI-powered suggestions<br>
-                                • Bulk order management<br>
-                                • Advanced analytics<br>
-                                • API for partners<br>
-                                • Social sharing
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
-            
-            <div class="annotation">
-                <strong>⚡ Key Integration Benefits:</strong><br>
-                • Seamless user experience across main site and designer<br>
-                • Leverages existing customer base and brand trust<br>
-                • Unified inventory and order management<br>
-                • Consistent branding and user interface<br>
-                • Single customer support workflow<br>
-                • Cross-selling opportunities between custom and pre-made products
+
+            <div class="checkout-step">
+              <h4>Step 2: Shipping & Contact</h4>
+              <div style="margin: 15px 0">
+                <div class="form-field">Full Name</div>
+                <div class="form-field">Email Address</div>
+                <div class="form-field">Phone Number</div>
+                <div class="form-field">Shipping Address</div>
+                <div class="form-field">Delivery Speed ▼</div>
+              </div>
             </div>
-            
-            <div style="background: #e8f5e8; border-radius: 8px; padding: 20px; margin-top: 30px;">
-                <h4 style="color: #27ae60; margin-bottom: 15px;">🎯 Success Metrics to Track</h4>
-                <div class="content-grid">
-                    <div style="background: white; padding: 15px; border-radius: 6px;">
-                        <strong>📈 Conversion Metrics</strong><br>
-                        • Design tool usage rate<br>
-                        • Design-to-purchase conversion<br>
-                        • Average order value<br>
-                        • Cart abandonment rate
-                    </div>
-                    <div style="background: white; padding: 15px; border-radius: 6px;">
-                        <strong>👥 User Engagement</strong><br>
-                        • Time spent in designer<br>
-                        • Number of design iterations<br>
-                        • Saved designs per user<br>
-                        • Return user rate
-                    </div>
-                    <div style="background: white; padding: 15px; border-radius: 6px;">
-                        <strong>💼 Business Impact</strong><br>
-                        • Revenue from custom orders<br>
-                        • Customer acquisition cost<br>
-                        • Customer lifetime value<br>
-                        • Support ticket volume
-                    </div>
-                    <div style="background: white; padding: 15px; border-radius: 6px;">
-                        <strong>🔧 Technical Performance</strong><br>
-                        • Page load times<br>
-                        • Mobile responsiveness<br>
-                        • Error rates<br>
-                        • API response times
-                    </div>
+
+            <div class="checkout-step">
+              <h4>Step 3: Payment</h4>
+              <div style="margin: 15px 0">
+                <div class="form-field">💳 Credit Card</div>
+                <div class="form-field">📱 PayPal</div>
+                <div class="form-field">🏦 Bank Transfer</div>
+                <div style="margin-top: 15px">
+                  <button class="cta-button">Complete Order</button>
                 </div>
+              </div>
             </div>
+          </div>
+
+          <div class="content-box">
+            <h4>📧 Order Confirmation Process</h4>
+            <div
+              style="
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                margin: 20px 0;
+              "
+            >
+              <div style="text-align: center">
+                <div
+                  style="
+                    background: #e8f5e8;
+                    border-radius: 50%;
+                    width: 60px;
+                    height: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 10px;
+                  "
+                >
+                  ✅
+                </div>
+                <strong>Order Placed</strong><br />
+                <small>Instant confirmation</small>
+              </div>
+              <div style="font-size: 24px; color: #ccc">→</div>
+              <div style="text-align: center">
+                <div
+                  style="
+                    background: #fff3cd;
+                    border-radius: 50%;
+                    width: 60px;
+                    height: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 10px;
+                  "
+                >
+                  🎨
+                </div>
+                <strong>Design Review</strong><br />
+                <small>1-2 business days</small>
+              </div>
+              <div style="font-size: 24px; color: #ccc">→</div>
+              <div style="text-align: center">
+                <div
+                  style="
+                    background: #d1ecf1;
+                    border-radius: 50%;
+                    width: 60px;
+                    height: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 10px;
+                  "
+                >
+                  👕
+                </div>
+                <strong>Production</strong><br />
+                <small>5-7 business days</small>
+              </div>
+              <div style="font-size: 24px; color: #ccc">→</div>
+              <div style="text-align: center">
+                <div
+                  style="
+                    background: #f8d7da;
+                    border-radius: 50%;
+                    width: 60px;
+                    height: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 10px;
+                  "
+                >
+                  📦
+                </div>
+                <strong>Shipped</strong><br />
+                <small>Tracking provided</small>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div class="annotation">
+          <strong>🔒 Checkout Security Features:</strong><br />
+          • SSL encryption for all payment processing<br />
+          • Multiple payment options (Credit, PayPal, Bank transfer)<br />
+          • Guest checkout option with account creation prompt<br />
+          • Order confirmation emails with tracking<br />
+          • Clear timeline expectations for production and delivery<br />
+          • Design proof approval process for custom orders
+        </div>
+      </div>
+
+      <!-- Mobile View Wireframe -->
+      <div class="wireframe" id="mobile">
+        <h2>📱 Mobile Responsive Design</h2>
+
+        <div class="layout">
+          <div class="layout-label">Mobile-First Approach</div>
+
+          <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px">
+            <div class="mobile-view">
+              <div style="text-align: center; margin-bottom: 20px">
+                <strong>📱 Mobile Homepage</strong>
+              </div>
+
+              <div class="header-section">☰ Couture Greek 🛒</div>
+
+              <div class="content-box" style="margin: 15px 0">
+                <div>
+                  <h3>🎨 Design Custom Apparel</h3>
+                  <button class="cta-button">Start Designing</button>
+                </div>
+              </div>
+
+              <div class="content-box" style="margin: 15px 0">
+                <div>
+                  <strong>👕 Quick Options</strong><br />
+                  T-Shirts | Sweatshirts | Hoodies
+                </div>
+              </div>
+
+              <div class="content-box" style="margin: 15px 0">
+                <div>
+                  <strong>⭐ Greek Letters</strong><br />
+                  Popular Sorority Designs
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-view">
+              <div style="text-align: center; margin-bottom: 20px">
+                <strong>🎨 Mobile Designer</strong>
+              </div>
+
+              <div class="header-section">← Design Studio ✓</div>
+
+              <div class="design-canvas" style="height: 200px; margin: 15px 0">
+                <div
+                  style="
+                    width: 120px;
+                    height: 150px;
+                    background: #f0f0f0;
+                    border: 2px dashed #ccc;
+                    border-radius: 15px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <div style="text-align: center; font-size: 12px">
+                    <div style="font-weight: bold">ΑΚΑ</div>
+                    <div style="font-size: 10px">Touch to edit</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0">
+                <div class="tool-btn" style="padding: 8px; font-size: 12px">📝 Text</div>
+                <div class="tool-btn" style="padding: 8px; font-size: 12px">🎨 Color</div>
+                <div class="tool-btn" style="padding: 8px; font-size: 12px">⭐ Greek</div>
+                <div class="tool-btn" style="padding: 8px; font-size: 12px">💰 $24.99</div>
+              </div>
+
+              <button class="cta-button">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <strong>📱 Mobile Optimization Features:</strong><br />
+          • Touch-friendly design tools and interface<br />
+          • Simplified navigation with hamburger menu<br />
+          • Finger-friendly button sizes (minimum 44px)<br />
+          • Vertical layout optimized for scrolling<br />
+          • Swipe gestures for design canvas navigation<br />
+          • One-thumb operation for common actions<br />
+          • Fast loading with progressive image loading<br />
+          • Mobile payment integration (Apple Pay, Google Pay)<br />
+          • Camera integration for uploading custom images
+        </div>
+      </div>
+
+      <!-- Integration Wireframe -->
+      <div class="wireframe" id="integration">
+        <h2>🔗 Couture Greek Integration Strategy</h2>
+
+        <div class="layout">
+          <div class="layout-label">Technical Integration Architecture</div>
+
+          <div class="content-grid">
+            <div class="content-box">
+              <div>
+                <h4>🌐 Main Website</h4>
+                <strong>www.couturegreek.com</strong><br /><br />
+                • Existing product catalog<br />
+                • User accounts & authentication<br />
+                • Shopping cart system<br />
+                • Order management<br />
+                • Brand identity & styling
+              </div>
+            </div>
+            <div class="content-box">
+              <div>
+                <h4>🎨 Custom Designer</h4>
+                <strong>Subdomain/Path Integration</strong><br /><br />
+                • design.couturegreek.com<br />
+                • OR /custom-designer/<br />
+                • Seamless SSO integration<br />
+                • Shared cart functionality<br />
+                • Unified checkout process
+              </div>
+            </div>
+          </div>
+
+          <div class="integration-note">
+            <h4>🔧 Technical Requirements</h4>
+            <div class="content-grid-3">
+              <div class="content-box">
+                <div>
+                  <strong>🔐 Authentication</strong><br />
+                  • Single Sign-On (SSO)<br />
+                  • Shared user sessions<br />
+                  • Guest design capability<br />
+                  • Account creation prompts
+                </div>
+              </div>
+              <div class="content-box">
+                <div>
+                  <strong>🛒 E-commerce</strong><br />
+                  • Unified shopping cart<br />
+                  • Inventory management<br />
+                  • Order processing<br />
+                  • Payment gateway integration
+                </div>
+              </div>
+              <div class="content-box">
+                <div>
+                  <strong>🎨 Design Engine</strong><br />
+                  • Canvas-based editor<br />
+                  • Real-time preview<br />
+                  • Asset management<br />
+                  • Export capabilities
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-box">
+            <h4>📊 Data Flow Architecture</h4>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 20px 0;
+                flex-wrap: wrap;
+                gap: 20px;
+              "
+            >
+              <div style="text-align: center; flex: 1; min-width: 150px">
+                <div
+                  style="
+                    background: #e8f5e8;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                  "
+                >
+                  <strong>👤 User</strong><br />
+                  Creates Design
+                </div>
+              </div>
+              <div style="font-size: 24px; color: #ccc">→</div>
+              <div style="text-align: center; flex: 1; min-width: 150px">
+                <div
+                  style="
+                    background: #fff3cd;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                  "
+                >
+                  <strong>🎨 Design API</strong><br />
+                  Processes & Saves
+                </div>
+              </div>
+              <div style="font-size: 24px; color: #ccc">→</div>
+              <div style="text-align: center; flex: 1; min-width: 150px">
+                <div
+                  style="
+                    background: #d1ecf1;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                  "
+                >
+                  <strong>💰 Pricing Engine</strong><br />
+                  Calculates Cost
+                </div>
+              </div>
+              <div style="font-size: 24px; color: #ccc">→</div>
+              <div style="text-align: center; flex: 1; min-width: 150px">
+                <div
+                  style="
+                    background: #f8d7da;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                  "
+                >
+                  <strong>🛒 Main Site</strong><br />
+                  Cart & Checkout
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pricing-section">
+            <h4>🚀 Implementation Phases</h4>
+            <div class="checkout-flow">
+              <div class="checkout-step">
+                <h4>Phase 1: Foundation</h4>
+                <div style="text-align: left; margin-top: 15px">
+                  • Basic design canvas<br />
+                  • Product selection<br />
+                  • Simple text/logo tools<br />
+                  • Basic pricing engine<br />
+                  • Cart integration
+                </div>
+              </div>
+
+              <div class="checkout-step">
+                <h4>Phase 2: Enhancement</h4>
+                <div style="text-align: left; margin-top: 15px">
+                  • Advanced design tools<br />
+                  • Greek letter library<br />
+                  • Template system<br />
+                  • 3D preview<br />
+                  • Mobile optimization
+                </div>
+              </div>
+
+              <div class="checkout-step">
+                <h4>Phase 3: Advanced</h4>
+                <div style="text-align: left; margin-top: 15px">
+                  • AI-powered suggestions<br />
+                  • Bulk order management<br />
+                  • Advanced analytics<br />
+                  • API for partners<br />
+                  • Social sharing
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <strong>⚡ Key Integration Benefits:</strong><br />
+          • Seamless user experience across main site and designer<br />
+          • Leverages existing customer base and brand trust<br />
+          • Unified inventory and order management<br />
+          • Consistent branding and user interface<br />
+          • Single customer support workflow<br />
+          • Cross-selling opportunities between custom and pre-made products
+        </div>
+
+        <div style="background: #e8f5e8; border-radius: 8px; padding: 20px; margin-top: 30px">
+          <h4 style="color: #27ae60; margin-bottom: 15px">🎯 Success Metrics to Track</h4>
+          <div class="content-grid">
+            <div style="background: white; padding: 15px; border-radius: 6px">
+              <strong>📈 Conversion Metrics</strong><br />
+              • Design tool usage rate<br />
+              • Design-to-purchase conversion<br />
+              • Average order value<br />
+              • Cart abandonment rate
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 6px">
+              <strong>👥 User Engagement</strong><br />
+              • Time spent in designer<br />
+              • Number of design iterations<br />
+              • Saved designs per user<br />
+              • Return user rate
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 6px">
+              <strong>💼 Business Impact</strong><br />
+              • Revenue from custom orders<br />
+              • Customer acquisition cost<br />
+              • Customer lifetime value<br />
+              • Support ticket volume
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 6px">
+              <strong>🔧 Technical Performance</strong><br />
+              • Page load times<br />
+              • Mobile responsiveness<br />
+              • Error rates<br />
+              • API response times
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
+
     <script>
-        function showWireframe(id) {
-            // Hide all wireframes
-            const wireframes = document.querySelectorAll('.wireframe');
-            wireframes.forEach(w => w.classList.remove('active'));
-            
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.nav-btn');
-            buttons.forEach(b => b.classList.remove('active'));
-            
-            // Show selected wireframe
-            document.getElementById(id).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
-        
-        // Add some interactive elements
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add hover effects to tool buttons
-            const toolBtns = document.querySelectorAll('.tool-btn');
-            toolBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.style.background = '#3498db';
-                    this.style.color = 'white';
-                    setTimeout(() => {
-                        this.style.background = '#ecf0f1';
-                        this.style.color = '#333';
-                    }, 200);
-                });
-            });
-            
-            // Add click effect to CTA buttons
-            const ctaBtns = document.querySelectorAll('.cta-button');
-            ctaBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.innerHTML = '✓ Added!';
-                    setTimeout(() => {
-                        this.innerHTML = 'Add to Cart';
-                    }, 1500);
-                });
-            });
+      function showWireframe(id) {
+        // Hide all wireframes
+        const wireframes = document.querySelectorAll('.wireframe');
+        wireframes.forEach(w => w.classList.remove('active'));
+
+        // Remove active class from all buttons
+        const buttons = document.querySelectorAll('.nav-btn');
+        buttons.forEach(b => b.classList.remove('active'));
+
+        // Show selected wireframe
+        document.getElementById(id).classList.add('active');
+
+        // Add active class to clicked button
+        event.target.classList.add('active');
+      }
+
+      // Add some interactive elements
+      document.addEventListener('DOMContentLoaded', function () {
+        // Add hover effects to tool buttons
+        const toolBtns = document.querySelectorAll('.tool-btn');
+        toolBtns.forEach(btn => {
+          btn.addEventListener('click', function () {
+            this.style.background = '#3498db';
+            this.style.color = 'white';
+            setTimeout(() => {
+              this.style.background = '#ecf0f1';
+              this.style.color = '#333';
+            }, 200);
+          });
         });
+
+        // Add click effect to CTA buttons
+        const ctaBtns = document.querySelectorAll('.cta-button');
+        ctaBtns.forEach(btn => {
+          btn.addEventListener('click', function () {
+            this.innerHTML = '✓ Added!';
+            setTimeout(() => {
+              this.innerHTML = 'Add to Cart';
+            }, 1500);
+          });
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
